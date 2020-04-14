@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<script>
+			//代码块  不能隔离变量，无所谓局部变量
+			{
+				var aa = 20
+			}
+			console.log(aa)
+			// 条件判断  △？○：□
+			var a = 80
+			var b = 88
+			a > b ? console.log("a大") : console.log("b大")
+			var max = a > b ? a : b
+			console.log(max)
+			// 工厂方法  
+			var obj = {
+				name: "孙悟空",
+				age: 28,
+				gender: "男",
+				sayName: function() {
+					console.log("我是 " + this.name)
+				}
+			}
+			obj.sayName()
+			
+			function createPerson(name,age,gender){
+				var obj=new Object()
+				obj.name=name
+				obj.age=age
+				obj.gender=gender
+				obj.sayName=function(){
+					console.log("我是 " + this.name)
+				}
+				return obj
+			}
+			var obj2=createPerson("周神",14,"男")
+			var obj3=createPerson("夏诗瑶",14,"女")
+			console.log(obj2)
+			console.log(obj3)
+			obj2.sayName()
+			
+			//构造函数
+			
+			function createAnimal(name,age,gender){
+				var obj=new Object()
+				obj.name=name
+				obj.age=age
+				obj.gender=gender
+				obj.sayName=function(){
+					console.log("这是条 " + this.name)
+				}
+				return obj
+			}
+			var obj3=("狗",2,"雄")
+			console.log(obj3)
+			
+			function Animal(name,age,gender){
+				this.name=name
+				this.age=age
+				this.gender=gender
+			}
+			var ani1=new Animal("吴雨薇",22,"母")
+			console.log(ani1)
+			//也把这样的构造函数叫做 “ 类 ”
+			console.log(ani1 instanceof Animal)
+			
+			//构造函数改进
+			function func1(){
+				console.log(this.name)
+			}
+			//所有Person对象共用一个方法，节约内存
+			//但是func1污染了全局变量，且不安全  
+			function Person(name,age,gender){
+				this.name=name
+				this.age=age
+				this.gender=gender
+				this.sayName=func1
+			}
+			var p1= new Person(1,1,1)
+			console.log(p1)
+			var p2= new Person(1,1,1)
+			console.log(p1.sayName==p2.sayName)
+			console.log(ani1 instanceof Person)
+			console.log(p1 instanceof Object)
+			console.log(ani1 instanceof Object)
+				
+		</script>
+	</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<button id="btn">测试回调函数</button>
+		1.你定义的<br />
+		2.你没有调<br />
+		3.它执行了<br />
+		<br />
+		1.DOM事件回调函数<br />
+		2.定时器回调函数<br />
+		3.AJAX请求回调函数<br />
+		4.生命周期回调函数<br />
+		<script>
+			//解 构 赋 值
+			var obj = {
+				name: "sima",
+				age: 39
+			}
+			let {
+				name,
+				age
+			} = obj
+			console.log(name)
+			console.log(age)
+			//							函数
+			//函数定义
+			function fn() { //函数声明
+				console.log('nigger')
+			}
+			var fn2 = function() { //表达式
+				console.log('slaughter nigger')
+				this.x='black nigger'
+			}
+			
+			//call&apply
+			var obj = {}
+			fn2.call(obj)
+			// 改变this的指向，第一个参数为你要传入的对象，
+			// 传入后函数的this就指向了这个对象,后面的参数为你为函数传递的参数值
+			console.log(obj.x);
+			
+			//立即执行函数 IIFE
+			//又称匿名函数自调用，自调用函数前面一定要加分号
+			(function(){
+				var aaa = 3
+				console.log('IIFE')
+			})()
+			var aaa = 4
+			console.log(aaa);
+			// 意义:
+			// 1.对外隐藏实现
+			// 2.不会污染外部命名空间
+			
+				//模拟模块
+			(function () {
+				var a=4396
+				function fuck(){
+					console.log(++a)
+				}
+				window.$=function(){
+					console.log("$执行")
+					return{
+						result:a
+					}
+				}
+			})()
+			
+			console.log($().result)
+			
+			
+			
+			//回 调 函 数
+			document.getElementById('btn').onclick = function() { //DOM事件回调函数
+				alert(this.innerHTML)
+			}
+
+			setTimeout(function() { //定时器回调函数
+				console.log("死了妈，瓦莉拉")
+			}, 2000)
+		</script>
+	</body>
+</html>

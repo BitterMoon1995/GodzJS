@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<script>
+			// console.log(Date.prototype,typeof Date.prototype)
+			//	原型和原型链
+			function Fun(){
+				
+			}
+			Fun.prototype.test=function(){
+				console.log('原型对象的test方法')
+			}
+			//原对象有一个属性prototype，它指向原型对象
+			console.log(Fun.prototype)
+			
+			//原型对象中有一个属性constructor，它指向原对象
+			console.log(Fun.prototype.constructor)
+			console.log(Fun.prototype.constructor==Fun)
+			//形成一个套娃闭环，这就是原型链
+			
+			//	作用
+			var fun= new Fun()
+			fun.test()
+			
+			//	显示原型(已演示)与隐式原型(实例对象的__proto__属性)
+			console.log(fun.__proto__)
+			console.log("对象的隐式原型的值为其对应的构造函数的显式原型的值")
+			console.log("构造函数=函数对象=类！！")
+			console.log(fun.__proto__==fun.constructor.prototype)
+			//(都是引用，指向同一个对象)
+			console.log("新创建fun实例时，将prototype值赋给新对象的__proto__")
+			console.log(fun.__proto__==Fun.prototype)
+			fun.test()
+			
+			//	原型链
+			function Func(){
+				this.test1=function(){
+					console.log("test1()")
+				}
+			}
+			Func.prototype.test2=function(){
+				console.log("test2()")
+			}
+			var func=new Func()
+			func.test1()
+			func.test2()
+			// func.test3()
+			
+			console.log(Func.prototype)
+			console.log(Object.prototype)
+		</script>
+	</body>
+</html>
