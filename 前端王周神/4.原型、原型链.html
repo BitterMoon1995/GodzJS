@@ -7,36 +7,35 @@
 	<body>
 		<script>
 			// console.log(Date.prototype,typeof Date.prototype)
-			//	原型和原型链
+		//	原型对象
 			function Fun(){
-				
+
 			}
 			Fun.prototype.test=function(){
 				console.log('原型对象的test方法')
 			}
 			//原对象有一个属性prototype，它指向原型对象
 			console.log(Fun.prototype)
-			
+
 			//原型对象中有一个属性constructor，它指向原对象
 			console.log(Fun.prototype.constructor)
-			console.log(Fun.prototype.constructor==Fun)
-			//形成一个套娃闭环，这就是原型链
-			
+			console.log(Fun.prototype.constructor===Fun)
+
 			//	作用
 			var fun= new Fun()
 			fun.test()
-			
-			//	显示原型(已演示)与隐式原型(实例对象的__proto__属性)
+
+		//	显式原型(函数的prototype属性)与隐式原型(实例对象的__proto__属性)
 			console.log(fun.__proto__)
-			console.log("对象的隐式原型的值为其对应的构造函数的显式原型的值")
+			console.log("★★★实例对象的隐式原型等于其构造函数的显式原型★★★")
 			console.log("构造函数=函数对象=类！！")
-			console.log(fun.__proto__==fun.constructor.prototype)
+			console.log(fun.__proto__===fun.constructor.prototype)
 			//(都是引用，指向同一个对象)
 			console.log("新创建fun实例时，将prototype值赋给新对象的__proto__")
-			console.log(fun.__proto__==Fun.prototype)
+			console.log(fun.__proto__===Fun.prototype)
 			fun.test()
-			
-			//	原型链
+
+		//  （隐式）原型链
 			function Func(){
 				this.test1=function(){
 					console.log("test1()")
@@ -49,9 +48,105 @@
 			func.test1()
 			func.test2()
 			// func.test3()
-			
-			console.log(Func.prototype)
-			console.log(Object.prototype)
+
+			console.log('所有函数的原型对象的隐式原型对象都是Object的显式原型对象,从而组成了一个链状结构' +
+					'\n'+'而该对象就是链的尽头')
+			console.log(Func.prototype.__proto__===Object.prototype)
+			//toString、hasOwnProperty等极为重要的方法就是通过原型链
+			//由函数Object的显式原型传递过来
+
+			//概念：
+				// 访问一个(实例)对象tar的属性时,
+				// *现在自身属性中找,找到返回
+				// *如果没有,找tar.__proto__指向的对象的属性
+				// *也没有,找tar.prototype.__proto__的属性,这里来到了Object的原型对象
+				// *还是没有,找Object.prototype,改值为null,返回null
+
+			//总结：
+			console.log('所有函数的原型对象都是Object的实例:')
+			console.log(Func.prototype instanceof Object)
+			console.log('除了Object它自己:')
+			console.log(Object.prototype instanceof Object)
+			console.log('所有函数的构造函数都是Function，包括Object()')
+			console.log(Func.constructor===Function)
+			console.log(Object.constructor===Function)
+			console.log('和它自己')
+			console.log(Function.constructor===Function)
+			console.log("Object的原型对象是原型链的尽头")
+			console.log(Object.prototype.__proto__)
+
+		//  属性问题：
+			function Nigger(){
+
+			}
+			Nigger.prototype.IQ=50
+			const nigger = new Nigger()
+			console.log('读取对象的属性时：会自动到原型链中查找')
+			console.log(nigger.IQ)
+			const nigger2 = new Nigger()
+			nigger2.IQ=30
+			console.log('设置对象的属性时，不会查找原型链，而是直接添加给该对象')
+			console.log(nigger.IQ)
+			console.log(nigger2)
+
+			function Person(name,age) {
+				this.name=name
+				this.age=age
+			}
+			var blackNigger1=new Person('niggerKobe',88)
+			Person.prototype.setName=function (name) {
+				this.name=name
+			}
+			blackNigger1.setName('kobeNigger')
+			console.log(blackNigger1)
+			var blackNigger2=new Person('Jordan',98)
+			console.log(blackNigger2)
+			console.log(blackNigger1.__proto__===blackNigger2.__proto__)
+
+		//  instance of 的本质
+			function BlackSlave() {
+			}
+			var slave=new BlackSlave()
+			console.log('如果函数BlackSlave的显式原型对象在实例对象slave的（隐式）原型链上，返回true')
+			console.log('slave instanceof BlackSlave?'+(slave instanceof BlackSlave))
+			console.log('slave instanceof Object?'+(slave instanceof Object))
+
+			console.log()
+			console.log(Object instanceof Function)
+			console.log(Object instanceof Object)
+			console.log(Function instanceof Function)
+			console.log(Function instanceof Object)
+			console.log(Object instanceof BlackSlave)
+
+		//	面试题
+			//1.
+			function A() {
+
+			}
+			A.prototype.n=1
+			var b = new A()
+			A.prototype={
+				n:2,
+				m:3
+			}
+			var c = new A()
+			console.log(b.n,b.m,c.n,c.m)
+
+			//2.
+			function F() {
+
+			}
+			Object.prototype.a=function () {
+				console.log('a()')
+			}
+			Function.prototype.b=function () {
+				console.log('b()')
+			}
+			var f=new F()
+			f.a()//a()
+			// f.b()//error
+			F.a()//null
+			F.b()//error
 		</script>
 	</body>
 </html>
