@@ -51,7 +51,7 @@
     //将函数作为实参传递给另一个函数调用
     function showDelay(msg, time) {
         setTimeout(function () {
-            alert(msg)
+            console.log(msg)
         }, time)
     }
 
@@ -92,16 +92,30 @@
     //    解决：用完及时指空
 
     //  6.面试题
-    const name='this window'
-    let obj={
-        name:'my object'
-        getName:function () {
+    const name="this window"
+    let obj = {
+        name:'object',
+        getName:function(){
             return function () {
-                return this.name;
-            };
+                return this.name
+            }
         }
-    };
+    }
     console.log(obj.getName()())
+
+    const name2="this window"
+    let obj2 = {
+        name2:'object',
+        getName:function(){
+            let that=this
+            return function () {
+                return that.name2
+            }
+        }
+    }
+    console.log(obj2.getName()())
+
+
 </script>
 </body>
 </html>
