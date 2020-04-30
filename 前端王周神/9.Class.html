@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我JavaScript也有类怎么了？</title>
+</head>
+<body>
+<button>点鸡</button>
+<script>
+    //1.类定义、构造函数、方法
+    class Star{
+        constructor(name,age,desc) {
+            this.name=name
+            this.age=age
+            this.desc=desc
+        }
+        //类中方法不需加function关键字
+        //多个方法不能加 , 分割
+        show(theShow){
+            console.log(this.name+' '+theShow)
+        }
+    }
+    let lzx=new Star('罗志祥',41,'《运动员》')
+    console.log(lzx)
+    lzx.show('多人运动')
+    console.log(typeof Star)
+
+    //2.类继承
+    class Mother{
+        constructor(x,y,name) {
+            this.x=x
+            this.y=y
+            this.name=name
+        }
+        calculate(){
+            console.log(this.x+this.y)
+        }
+        beauty(){
+            console.log('9分佳人')
+        }
+    }
+    let that
+    let that2
+    class Daughter extends Mother{
+        constructor(x,y,name) {//一般无需重写
+            super(x,y,name);
+            this.btn=document.querySelector('button')
+            this.btn.onclick=this.sing()
+            that=this
+        }
+        myCal(){
+            //super关键字：super可用于调用父类的构造方法
+            //以及普通方法
+            super.calculate()
+        }
+        calculate() {
+            super.calculate();
+            console.log('重写：'+this.x*this.y)
+        }
+        fasao(){
+            console.log('骚逼穿骚裙流水水')
+            console.log('方法的this：'+this.name)
+            that2=this
+        }
+        falang(){
+            // fasao()  fasao is not defined
+            this.fasao()
+        }
+        sing(){
+            console.log('coming!!!')
+            console.log(this)
+        }
+    }
+    let daughter=new Daughter(3,3,'周薇儿')
+    daughter.beauty()
+
+    daughter.calculate()
+
+    daughter.myCal()
+
+    daughter.falang()
+
+    /*3.三个注意点
+    (1)类没有变量提升，必须先定义类，再实例化对象
+
+    (2)类中的方法并不能直接调用其他属性和方法，一定要加this使用。
+    因为虽然它们名义上同属于这个类，但是普通函数对象的执行上下文内其实并获取不到构造函数的参数，
+    所以用this通过实例对象的引用来得到它的属性值
+
+    (3)this的指向问题
+        构造函数中的this：指向创建的实例对象*/
+    console.log('构造函数this指向实例对象 :'+(that===daughter))
+    /*  普通方法的this：指向调用它的对象,谁调用它就指向谁  */
+    console.log('普通方法this指向调用它的对象：'+(that2===daughter))
+
+</script>
+</body>
+</html>

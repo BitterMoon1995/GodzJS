@@ -5,6 +5,8 @@
     <title>Title</title>
 </head>
 <body>
+<button id="btn1">button1</button>
+<button id="btn2">button2</button>
 <script>
 //  1.解构赋值
     //取对象
@@ -59,6 +61,7 @@
     //3.两个及以上形参
     let fun3=(a,b)=>console.log(a,b)
     fun3('black','nigger')
+
     //箭头右边（函数体）
     //1.只有一条语句或表达式 可以省略函数体的大括号
     let fun4=(x,y)=>x+y
@@ -67,8 +70,62 @@
     let fun5=(x,y)=>{return x+y}
     //要加大括号，反而要自己补上return
     console.log(fun5(1,2))
-    //2.
 
+    //2.函数体不止一条语句或表达式时
+    //必须加大括号，必须用return指定返回值
+    let fun6=(x,y)=>{
+        console.log(x,y)
+        return x+y;
+    }
+    console.log(fun6(1,2))
+
+    //箭头函数的this：由定义时决定而不是调用时决定，和普通函数相反
+    let btn1=document.getElementById('btn1')
+    let btn2=document.getElementById('btn2')
+    btn1.onclick=function () {
+        console.log(this)
+    }
+    btn2.onclick=()=>{
+        console.log(this)
+    }
+
+//  5. 3点运算符
+    function f1(a,b,c) {
+        console.log(arguments)
+    }
+    f1(1,2,3)//arguments只是伪数组，不能调用真正的数组的方法
+
+    //类似于arguments，但更牛牛
+    function f2(...value) {
+        console.log(value)
+        value.forEach(function (value, index, array) {
+            console.log(value,index)
+        })
+    }
+    f2(6,3,2,4)
+
+    let arr2=[1,6]
+    let arr3=[2,3,4,5]
+    console.log(1,...arr3,6)
+
+    const request={
+        url:'www.baidu.com',
+        data:'sinima'
+    }
+    const request2={
+        ...request,
+        method:'透他妈'
+    }
+    request2.url='gggggggg'
+    console.log(request)
+
+//  6.形参默认值
+    function Point(x=1,y=2) {//指定默认值
+        this.x=x
+        this.y=y
+    }
+    let point=new Point()//不传参数
+    console.log(point)
 </script>
 </body>
 </html>

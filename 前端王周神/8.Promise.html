@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery-3.5.0.js"></script>
+</head>
+<body>
+<button id="">透透透</button>
+<script>
+
+    let promise = new Promise((resolve, reject) => {
+        //初始化promise的状态为pending
+        let arr = []
+        $.ajax({
+            url: 'http://localhost:8080/mini/scene/list',
+            type: 'get',
+
+            success: function (result) {
+                console.log(result)
+                arr = result
+                //根据需求对应修改promise的状态
+                if (arr[0].id === 'b') resolve(arr)//修改promise对象的状态的为成功
+                else reject(result)//修改promise对象的状态的为失败
+            }
+        })
+    })
+    promise
+        .then(
+            (data) => {
+                console.log('成功后回调')
+                console.log(data[0].name)
+                return promise//then级联，必须在每一个then最后返回本promise对象
+            },
+            (data) => {
+                console.log('失败后回调')
+            })
+		//下一个then的调用者就是上一个then返回的promise对象	
+        .then(
+            (data) => {
+                console.log('成功后第二次回调')
+                console.log(data[0].name)
+            },
+            (data) => {
+                console.log('失败后第二次回调')
+            })
+
+</script>
+</body>
+</html>
