@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button id="btn1">button1</button>
+<button id="btn2">button2</button>
+<script>
+    // //  1.解构赋值
+    //     //取对象
+    //     let user1={username:'nigger',age:'33'}
+    //     let whitePig1={name:'Jack',nation:'USA',color:'white'}
+    //     let {username,age}=user1
+    //     console.log(username,age)
+    //     let {nation}=whitePig1
+    //     let {name,color}=whitePig1
+    //     console.log(nation,name,color)
+    // /*      1.变量名要对应
+    //         2.可以任意取需要的*/
+    //     //取数组
+    //     let arr1=[4,3,9,6,8,'八强']
+    //     let [a,b]=arr1
+    //     //按索引取到1,2个
+    //     console.log(a,b)
+    //     let [,,,,,c]=arr1
+    //     //用逗号进行占位，取到第六个
+    //     console.log(c)
+
+    //参数解构
+    // function func4({param1, param2}) {
+    //     console.log(param1, param2)
+    // }
+    //
+    // func4({
+    //     param1: '尼哥',
+    //     param2: '黑奴'
+    // })
+
+    //
+    // //  2.模板字符串
+    //     let person1={name:'nigger',age:'43'}
+    //     str2=`名字:${person1.name},年龄:${person1.age}`
+    //     //注意是 `` 号
+    //     //变化的用${}包裹
+    //     console.log(str2)
+    //
+    // //  3.对象简写
+    //     let name0='nigger'
+    //     let age0=88
+    //     let obj1={
+    //         name0,
+    //         age0,
+    //         //同名的属性可以不必再 = 号赋值
+    //
+    //         getName(){
+    //             return this.name0
+    //             //可以省略函数定义的function关键字
+    //         }
+    //     }
+    //     console.log(obj1)
+    //
+    // //  4.箭头函数
+    //     //箭头左边（函数名）
+    //     //1.没有形参 不能省略小括号，它起占位作用
+    //     let fun1=()=>console.log("我是箭头")
+    //     fun1()
+    //     //2.一个形参 小括号可以省略
+    //     let fun2=a=>console.log(a)
+    //     fun2('niggerrrrrrrr')
+    //     //3.两个及以上形参
+    //     let fun3=(a,b)=>console.log(a,b)
+    //     fun3('black','nigger')
+    //
+    //     //箭头右边（函数体）
+    //     //1.只有一条语句或表达式 可以省略函数体的大括号
+    //     let fun4=(x,y)=>x+y
+    //     //会自动返回语句或表达式的执行结果
+    //     console.log(fun4(1,2))
+    //     let fun5=(x,y)=>{return x+y}
+    //     //要加大括号，反而要自己补上return
+    //     console.log(fun5(1,2))
+    //
+    //     //2.函数体不止一条语句或表达式时
+    //     //必须加大括号，必须用return指定返回值
+    //     let fun6=(x,y)=>{
+    //         console.log(x,y)
+    //         return x+y;
+    //     }
+    //     console.log(fun6(1,2))
+    //
+    //     //箭头函数的this：由定义时决定而不是调用时决定，和普通函数相反
+    //     let btn1=document.getElementById('btn1')
+    //     let btn2=document.getElementById('btn2')
+    //     btn1.onclick=function () {
+    //         console.log(this)
+    //     }
+    //     btn2.onclick=()=>{
+    //         console.log(this)
+    //     }
+    //
+    // //  5. 3点运算符
+    //
+    //     console.log('----------3点运算符--------------')
+    //     function f1(a,b,c) {
+    //         console.log(arguments)
+    //     }
+    //     f1(1,2,3)//arguments只是伪数组，不能调用真正的数组的方法
+    //
+    //     //类似于arguments，但更牛牛
+    //     function f2(...value) {
+    //         console.log(value)
+    //         value.forEach(function (value, index, array) {
+    //             console.log(value,index)
+    //         })
+    //     }
+    //     f2(6,3,2,4)
+    //
+    //     let arr2=[1,6]
+    //     let arr3=[2,3,4,5]
+    //     console.log(1,...arr3,6)
+    //
+    //     const request={
+    //         url:'www.baidu.com',
+    //         data:'sinima'
+    //     }
+    //     const request2={
+    //         ...request,
+    //         method:'透他妈'
+    //     }
+    //     console.log(request2)
+    //
+    // //  6.形参默认值
+    //     function Point(x=1,y=2) {//指定默认值
+    //         this.x=x
+    //         this.y=y
+    //     }
+    //     let point=new Point()//不传参数
+    //     console.log(point)
+
+    //  7.计算属性名
+    let lastName = 'last name'
+    let person = {
+        firstname: '尼哥',
+        [lastName]: '买提'
+    }
+    console.log(person[lastName])
+</script>
+</body>
+</html>

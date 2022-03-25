@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <button id="a">作为一个DOM事件处理函数中的this</button>
+</div>
+</body>
+<script>
+    //定义：当前执行上下文（global、function 或 eval）的一个属性，在非严格模式下，总是指向一个对象，在严格模式下可以是任意值。
+    //1.全局上下文：无论是否在严格模式下，在全局执行环境中（在任何函数体外部）this 都指向全局对象。
+    // console.log(this === window)
+    // a = 37
+    // console.log(window.a)
+    // this.b = 'nig'
+    // console.log(window.b)
+    // //备注：你可以使用 globalThis 获取全局对象，无论你的代码是否在当前上下文运行。
+    // console.log(globalThis === window)
+    // console.log(globalThis.b)
+
+    //2.函数上下文（这里的函数不作为对象的方法）：this的值取决于函数被调用的方式，即是直接方法括号，还是通过
+    // call、apply方法调用，因为后两者可以改变（另外指派）该函数的this乃至于函数的参数。
+    // 默认情况下（即直接括号调用）指向全局对象，浏览器中就是 window。
+    // 周神释经：普通函数的this由【运行时】所处的环境确定，被对象作为方法调用就是那个对象，直接调用就是window，
+    // 用call、apply等函数在【运行时修改了this】，就是修改的那个this。普通函数与箭头函数的本质区别，就是this
+    // 是在运行时确定的，而非创建时确定（定死）
+
+    // function f1() {
+    //     return this
+    // }
+    // console.log(f1())
+    //
+    // o = {name: '我是o'}
+    // console.log(f1.call(o))
+
+
+    //3.类上下文：this 在 类 中的表现与在函数中类似，，因为类本质上也是函数，但也有一些区别和注意事项。
+    //在【类的构造函数】中，this 是一个常规对象。类中所有非静态的方法都会被添加到 this 的原型中、
+    // class Example  {
+    //     first(){
+    //         return this
+    //     }
+    //     second(){}
+    //     static third(){}//备注：静态方法不是 this 的属性，它们只是类自身的属性。
+    //
+    //     constructor() {
+    //         const thisProto = Object.getPrototypeOf(this)
+    //         console.log(Object.getOwnPropertyNames(thisProto))
+    //     }
+    // }
+    // let exm = new Example()
+    // console.log(exm.first())
+
+    //call与apply：函数上下文中的this
+    // var obj = {a: 'Custom'};  // 对象可以作为 bind 或 apply 的第一个参数传递，并且该参数将绑定到该对象。
+    //
+    // var a = 'Global';  // 声明一个变量，并将该变量作为全局对象 window 的属性。
+    //
+    // function whatsThis() {
+    //     return this.a;  // this 的值取决于函数被调用的方式
+    // }
+    // console.log(whatsThis())//因为在这个函数中 this 没有被设定，所以它默认为 全局/ window 对象
+    // console.log(whatsThis.call(obj))//函数中的 this 被设置为obj
+    // console.log(whatsThis.apply(obj))//函数中的 this 被设置为obj
+
+    //call与apply：this 和对象转换
+    // function add(c, d) {
+    //     return this.a + this.b + c + d
+    // }
+    //
+    // var o = {a: 1, b: 3}
+    // console.log(add.call(o,5,7))
+    // //参数形式不同，call接收 ...argArray: any[]，apply接收 argArray?: any
+    // console.log(add.apply(o,[5,7]))
+
+    //bind方法：ECMAScript 5 引入了 Function.prototype.bind()。调用f.bind(someObject)会创建一个与f具有相同函数体
+    //和作用域的函数，但是在这个新函数中，this将永久地被绑定到了bind的第一个参数，无论这个函数是如何被调用的。
+    // var name = '黑狗'
+    // function func4() {
+    //     return this.name
+    // }
+    // var g = func4.bind({name: '尼哥'})
+    // console.log(g())
+
+    // 箭头函数：箭头函数的 this 被设置为它被【创建时】的环境，而非它运行时的环境。
+    // 与普通函数的本质区别：
+    // 1.箭头函数的this是创建时永久绑定外层函数的this的，不可改变，如果没有外层函数，为全局对象；
+    // 2.普通函数的this与其外层函数的this没有任何关系，是完全由调用方式决定的
+
+    // 全局环境，与普通函数一致
+    // let globalObj = this
+    // let arrowFunc = () => this
+    // console.log(globalObj === arrowFunc())
+
+    // 作为对象中成员方法，表面上在一个对象里面，实际上作用域仍然是最外层的JS环境
+    // var name = '黑人'
+    // let obj = {
+    //     name: '尼哥',
+    //     hello: () => console.log(this.name)
+    // }
+    // obj.hello()
+
+    // 创建时确定，永不更改
+    // var obj = {arrowFunc: arrowFunc};
+    // console.log(arrowFunc.call(obj) === globalObj)// 无法使用call 或 apply来指派箭头函数中的this
+    // console.log(arrowFunc.apply(obj) === globalObj)
+
+    // 作为对象中的函数中的函数，箭头函数的this就是外层函数的this
+    // var name = '黑人'
+    // let nig = {
+    //     name: '尼哥',
+    //     hi: function () {
+    //         return () => {
+    //             console.log(this.name)
+    //         }
+    //     }
+    // }
+    //
+    // // 由于是nig.hi()，hi作为nig的方法调用，hi的this就是nig
+    // nig.hi()()
+    // // hi不作为nig的方法调用，而是通过属性访问获取hi，则hi的this是全局对象
+    // let hi = nig.hi
+    // hi()()
+
+    // const obj = {
+    //     higherFunc: function () {
+    //         console.log(this)//如果作为obj的方法调用（obj.higherFunc()），为obj。否则为Window
+    //         return () => {
+    //             return this
+    //         }
+    //     },
+    //     name: '黑尼'
+    // }
+    // let fn = obj.higherFunc()// 如果作为obj对象的一个方法来调用bar，会把它的this绑定到obj。
+    // console.log(fn)
+    // console.log(fn())
+    // console.log(fn() === obj)// 直接调用fn而不设置this，为全局对象
+    // console.log(fn().name)
+    // 但是注意，如果你只是【引用】obj的方法，而【没有调用】它，那么调用箭头函数后，this指向window，因为它从 higherFunc 继承了this。
+    // let fn2 = obj.higherFunc
+    // console.log(fn2()() === window)
+
+    //★★★【作为对象的方法：当函数作为对象里的方法被调用时，this 被设置为调用该函数的对象。】★★★
+    // obj2 = {
+    //     name: '贴吧畜',
+    //     func: function () {
+    //         return this
+    //     }
+    // }
+    // console.log(obj2.func())
+    // console.log(obj2.func().name)
+    //还是这种情况，引用一个对象的方法创建一个新的变量，将该变量作为函数调用，这个方法里的this为全局对象
+    // let nig = obj2.func
+    // console.log(nig())
+    //这样的行为完全不会受函数定义方式或位置的影响。就算先定义函数func2，然后再将其附属到obj2.func2。这样做的结果是一样的：这表明函数是从 o 的 func4 成员调用的才是重点。
+    // function func2() {
+    //     return this
+    // }
+    // obj2.func2 = func2
+    // console.log(obj2.func2())
+
+    //原型链中的 this：对于在对象原型链上某处定义的方法，同样的概念也适用。如果该方法存在于一个对象的原型链上，
+    // 那么 this 指向的是调用这个方法的对象，就像该方法就在这个对象上一样。
+    // var father = {
+    //     func4: function () {
+    //         return this.a + this.b;
+    //     }
+    // }
+    // var son = Object.create(father);
+    // son.a = 2
+    // son.b = 4
+    // // son根本就没有方法f，它的 func4 属性继承自它的原型。虽然最终是在 father 中找到 func4 属性的，这并没有关系；
+    // // 查找过程首先从 son.func4 的引用开始，所以函数中的 this 指向son。也就是说，因为f是作为son的方法调用的，所以它的this指向了son。
+    // console.log(son.func4())
+
+    // 构造函数中的this
+    // 当一个函数用作构造函数时（使用new关键字），它的this被绑定到正在构造的新对象。
+    // 周神释经；如果一个函数是构造函数（存在this.x=y这样的执行语句），当使用new关键字调用它时，
+    // 函数体中的this指向这个新创建的对象。
+    // 但是如果不用new关键字调用，还是适用一般规则（直调为window，对象.方法调为对象）
+
+    // function Fuck() {
+    //     console.log(this)
+    //     this.name = '法克'
+    // }
+    //
+    // Fuck();
+    // let me = new Fuck()
+
+    // let nig = {
+    //     dick: '8毫米',
+    //     fuck: function () {
+    //         console.log(this)
+    //         this.b = '尼哥'
+    //     }
+    // }
+    // nig.fuck()
+    // let me2 = new nig.fuck()
+
+    // function C() {
+    //     //根据需要在this上创建属性，然后赋值给它们。new表达式的结果是当前绑定到 this 的对象。
+    //     this.a = 30
+    // }
+    //
+    // let o = new C()
+    // console.log(o.a)
+    //
+    // function HaveReturn() {
+    //     this.a = 30 //会执行，但是失去意义
+    //     // 如果函数具有返回对象的return语句，则该对象将是 new 表达式的结果。
+    //     return {
+    //         a: 40
+    //     }
+    // }
+    // let o2 = new HaveReturn()
+    // console.log(o2.a)
+
+    // 作为一个DOM事件处理函数
+    // 当函数被用作事件处理函数时，它的 this 指向触发事件的元素
+
+    // 被调用时，将关联的元素变成蓝色
+    // function bluify(e){
+    //     console.log(this === e.currentTarget); // 总是 true
+    //
+    //     // 当 currentTarget 和 target 是同一个对象时为 true
+    //     console.log(this === e.target);
+    //     this.style.backgroundColor = '#A5D9F3';
+    // }
+    //
+    // // 按钮a点击变蓝
+    // var element = document.getElementById('a');
+    // element.addEventListener('click', bluify, false);
+
+    // 类中的this
+
+
+
+    // let i = {
+    //     fuck: function () {
+    //         console.log(this)
+    //     }
+    // }
+    // i.fuck()
+
+    //《总结》
+    //全局中调用
+    // function func() {
+    //     console.log(this)
+    // }
+    // console.log('全局中调用')
+    // func()
+    //
+    // //作为对象的方法调用
+    // let obj = {
+    //     name: 'obj',
+    //     func: function () {
+    //         console.log(this)
+    //     }
+    // }
+    // console.log('作为对象的方法调用')
+    // obj.func()
+    //
+    // //高阶函数的返回值中的this
+    // let obj0 = {
+    //     name: 'obj0',
+    //     func: function () {
+    //         return function () {
+    //             console.log(this)
+    //         }
+    //     }
+    // }
+    // console.log('作为高阶函数的返回值调用')
+    // obj0.func()()
+    // console.log('作为高阶函数的返回值，指派另一个this调用')
+    // obj0.func().call(obj0)
+    // console.log('作为高阶函数返回值，但只引用该高阶函数，再调用该引用')
+    // let func0 = obj0.func
+    // func0()()
+    //
+    // //作为构造函数调用
+    // console.log('作为构造函数调用')
+    // let o = new func()
+    //
+    // //原型链中调用
+    // let p = {
+    //     name: 'p',
+    //     f: function() {
+    //         console.log(this)
+    //     }
+    // };
+    // let q = Object.create(p);
+    // q.name = 'q'
+    // console.log('原型链中调用')
+    // q.f()//适用“谁调用this就是谁原则”，所以看起来就像q有f这个方法一样
+    //
+    // //使用call & apply调用
+    // let obj2 = {
+    //     name: 'obj2',
+    //     f: function () {
+    //         console.log(this.name)
+    //     }
+    // }
+    // let obj3 = {
+    //     name: 'obj3'
+    // }
+    // console.log('使用call & apply调用')
+    // obj2.f.call(obj3)
+    //
+    // //箭头函数中的this
+    // const name = 'window'
+    // const func2 = (() => console.log(this.name));
+    // const obj4 = {
+    //     name: 'obj4',
+    //     f2: func2,
+    //     f3: () => console.log(this.name)
+    // }
+    // console.log('箭头函数：全局中调用')
+    // func2()
+    // console.log('箭头函数：全局中另指派this调用')
+    // obj4.f2.call(obj3)
+    // console.log('箭头函数：作为对象的方法调用')
+    // obj4.f3()
+    //
+    // const obj5 = {
+    //     name: 'obj5',
+    //     func4: function () {
+    //         return ()=> console.log(this)
+    //     },
+    // }
+    // console.log('箭头函数：作为高阶函数返回值调用')
+    // obj5.func4()()
+    //
+    // console.log('箭头函数：作为高阶函数返回值，但只引用该高阶函数，再调用该引用')
+    // let f4 = obj5.func4
+    // f4()()
+
+
+
+</script>
+</html>

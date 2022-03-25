@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/jquery-3.5.0.js"></script>
+</head>
+<body>
+<button id="">透透透</button>
+<script>
+    // 菜鸟教程、MDN
+    //《一 创建》
+    // 1.创建promise对象
+    // Promise 对象是由关键字 new 及其构造函数来创建的。该构造函数会把一个叫做“处理器函数”（executor function）的函数
+    // 作为它的参数。这个“处理器函数”接受两个函数——resolve 和 reject ——作为其参数。当异步任务顺利完成且返回结果值时，
+    // 会调用 resolve 函数；而当异步任务失败且返回失败原因（通常是一个错误对象）时，会调用reject 函数。
+
+    // 释经：promise对象通过new关键字调用Promise构造函数创建,Promise构造函数的参数为一个二参(resolve、reject函数)无返回值函数
+    // （简称构造参数函数），构造参数函数的方法体一般由三部分组成：1.发出异步请求 2.resolve(请求成功结果)
+    // 3.reject(请求失败错误信息)。另：既然都以new关键字调用了Promise()这个方法，那创建这个promise对象的时候，
+    // 作为构造参数的函数当然就已经执行了，请求也已经发了
+    // let backend = {
+    //     getAsyncRes: function () {
+    //         return Math.floor(Math.random() * 2) + 1
+    //     }
+    // }
+    //
+    // const firstPromiseObj = new Promise((resolve, reject) => {
+    //     let res = backend.getAsyncRes();
+    //     if (res === 1) {
+    //         resolve(res)
+    //     } else {
+    //         reject('鸡你太美')
+    //     }
+    // })
+
+    // 创建具有promise功能的函数
+    // 想要某个函数拥有promise功能，只需让其返回一个promise即可。
+    // function myAsyncFunc() {
+    //     return firstPromiseObj
+    // }
+    //
+    // myAsyncFunc()
+    //     .then((res) => console.log(`请求成功，结果为：${res}`),
+    //         (error) => console.log(`请求失败，错误信息为：${error}`))
+
+    // 将现有对象转为Promise对象
+    // Promise.resolve(value)：返回一个状态由给定value决定的Promise对象。如果该值是thenable(即，带有then方法的对象)，
+    // 返回的Promise对象的最终状态由then方法执行决定；否则的话(该value为空，基本类型或者不带then方法的对象),
+    // 返回的Promise对象状态为fulfilled，并且将该value传递给对应的then方法。通常而言，如果您不知道一个值是否是Promise对象，
+    // 使用Promise.resolve(value) 来返回一个Promise对象,这样就能将该value以Promise对象形式使用。
+    // let convertedObj = Promise.resolve(2);//基本类型，返回的Promise对象状态为fulfilled
+    // convertedObj.then(() => console.log('resolve executed'), () => console.log('reject executed'))
+    // let hadThenObj = {
+    //     then: function (resolve, reject) {
+    //         reject()
+    //     }
+    // }
+    // //thenAble object，且then方法中执行的是reject()，所以返回一个状态为rejected的promise对象
+    // let convertedObj2 = Promise.resolve(hadThenObj);
+    // convertedObj2
+    //     // 当 .then() 中缺少能够返回 promise 对象的函数时，promise的状态不会进行任何改变，
+    //     // 链式调用会直接继续进行下一环操作，
+    //     .then()
+    //     .then(() => console.log('resolve executed'),
+    //         () => console.log('reject executed'))
+    //     // 在没有迫切需要的情况下，可以在最后一个.catch() 语句时再进行错误处理，这种做法更加简单。
+    //     // 之前调用过reject就不会调用后面的catch
+    //     .catch(() => console.log('catch executed'))
+
+    //《二 概念罗列》
+    // 定义：一个 Promise 对象代表一个在这个 promise 被创建出来时不一定已知的值。它让您能够把异步操作最终的成功返回值，
+    // 或者失败原因和相应的处理程序关联起来。 这样使得异步方法可以像同步方法那样返回值：异步方法并不会立即返回最终的值，
+    // 而是会返回一个 promise，以便在未来某个时候把值交给使用者。
+
+    // promise三状态：一个 Promise 必然处于以下几种状态之一：
+    // 待定（pending）: 初始状态，既没有被兑现，也没有被拒绝。
+    // 已兑现（fulfilled）: 意味着操作成功完成。
+    // 已拒绝（rejected）: 意味着操作失败。
+    // 待定状态的 Promise 对象要么会通过一个值被兑现（fulfilled），要么会通过一个原因（错误）被拒绝（rejected）。
+    // 当这些情况之一发生时，我们用 promise 的 then 方法排列起来的相关处理程序就会被调用。
+    // 如果 promise 在一个相应的处理程序被绑定时就已经被兑现或被拒绝了，那么这个处理程序就会被调用，
+    // 因此在完成异步操作和绑定处理方法之间不会存在竞争状态。
+
+    // 链式调用：我们可以用 promise.then()，promise.catch() 和 promise.finally()
+    // 这些方法将进一步的操作与一个变为已敲定状态的 promise 关联起来。这些方法还会返回一个新生成的 promise 对象，
+    // 这个对象可以被非强制性的用来做链式调用。
+    // 过早地处理被拒绝的 promise 会对之后 promise 的链式调用造成影响。不过有时候我们因为需要马上处理一个错误也只能这样做。
+    // 另一方面，在没有迫切需要的情况下，可以在最后一个.catch() 语句时再进行错误处理，这种做法更加简单。
+
+    // 《三 详谈Promise.all》
+
+    const pm1 = Promise.resolve(43)
+    const pm2 = Promise.resolve(96)
+    // const pm3 = new Promise(resolve => setTimeout(() => resolve(97), 3000))
+    // const pm4 = new Promise((_, reject) => setTimeout(() => reject('reject，原因：洗澡虚空冠'), 1000))
+
+    // Promise.all() 方法接收一个promise的iterable类型（注：Array，Map，Set都属于ES6的iterable类型）的输入，
+    function all1() {
+        // 如果传入的参数是一个空的可迭代对象，则同步地返回一个已完成（already resolved）状态的 Promise
+        // return Promise.all([])
+        // 如果传入的参数不包含任何 promise，或者所有传入的promise都为已完成状态，
+        // 则异步地返回一个完成（asynchronously resolved） Promise。
+        return  Promise.all([1, 2, 3])
+        // return Promise.all([pm1, pm2])
+    }
+
+    // console.log(all1())
+
+    function all2() {
+        // 其它情况下返回一个处理中（pending）的Promise。
+        // 这个返回的 promise 之后会在所有的 promise 都完成或有一个 promise 失败时异步地变为完成或失败。
+        // return Promise.all([pm2, pm3])
+        return Promise.all([pm3, pm4])
+    }
+
+    // console.log(all2())
+
+    // 执行时间：
+    // Promise.all 等待所有都完成，这时总执行时间为最长的那一个promise。如果参数中包含非 promise 值，
+    // 这些值将被忽略，但仍然会被放在返回数组中；
+    // Promise.all(['简自狗', pm1, pm3]).then(r => console.log(r))
+    // 或第一个失败，这时总执行时间为第一个失败的那个promise。
+    // Promise.all(['简畜', pm3, pm4]).then(res => console.log(res),reason => console.log(reason))
+
+    // 同步与异步：
+    // 【Promise.all 当且仅当传入的可迭代对象为空时为同步】，所以也不建议return Promise.all。
+    // console.log(Promise.all([])) //立即输出resolved
+
+    // 但是还是要让出JS线程
+    // function f1() {
+    //     Promise.all([]).then(r => console.log(r))
+    // }
+    // f1()
+    // console.log('f1()后代码')
+
+    // let p2 = Promise.all([1])
+    // console.log(p2) // 输出为pending
+
+    // 快速返回失败：
+    // Promise.all 在任意一个传入的 promise 失败时返回失败。例如，如果你传入的 promise中，
+    // 有四个 promise 在一定的时间之后调用成功函数，有一个立即调用失败函数，那么 Promise.all 将立即变为失败，
+    // 其余resolved promise将被忽略。
+    // pm5 = Promise.reject('简自畜')
+    // Promise.all([pm3, new Promise(resolve => setTimeout(() => resolve(2), 9000)), pm5])
+    //        .then(result => console.log(result), reason => console.log(reason))
+
+    // Promise.all(...)表达式当然也是异步执行的，出现即让出JS线程
+    function f() {
+        Promise.all([1,2,3]).then(r => console.log(r))
+    }
+    f()
+    console.log('f()后代码')
+
+
+
+</script>
+</body>
+</html>

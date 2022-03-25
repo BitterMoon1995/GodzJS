@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <title></title>
-    <script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
 <script>
@@ -95,26 +95,7 @@
     console.log(p1 instanceof Object)
     console.log(ani1 instanceof Object)
 
-	//静态成员与实例成员
-	function Star(name,age) {
-    	//实例成员就是构造函数内部通过this添加的成员
-		this.name=name
-		this.age=age
-		this.sing=function () {
 
-		}
-	}
-	let lzx=new Star('罗志祥',40)
-	//实例成员只能通过实例对象来访问
-	console.log(lzx.name)
-	//构造函数访问不了实例成员
-	console.log(Star.name)
-	//静态成员就是直接给构造函数本身添加的成员
-	Star.sex='男'
-	//静态成员只能通过构造函数来访问
-	console.log(Star.sex)
-	//实例对象又访问不到了
-	console.log(lzx.sex)
 
 </script>
 </body>

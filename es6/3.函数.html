@@ -24,30 +24,28 @@
 				console.log('slaughter nigger')
 				this.x='black nigger'
 			}
-			
+
 			//call&apply
 			var obj = {}
 			fn2.call(obj)
 			// 改变this的指向，第一个参数为你要传入的对象，
 			// 传入后函数的this就指向了这个对象,后面的参数为你为函数传递的参数值
 			console.log(obj.x);
-			
-			//立即执行函数 IIFE
-			//又称匿名函数自调用，自调用函数前面一定要加分号
-			(function(){
-				var aaa = 3
-				console.log('IIFE')
-			})()
-			var aaa = 4
-			console.log(aaa);
-			// 意义:
-			// 1.对外隐藏实现
-			// 2.不会污染外部命名空间
-			
+
+			// 立即调用函数表达式(Immediately Invoked Function Expression)  IIFE
+			// let r = (function iife() {
+			//     let name = '黑人'
+			//     return 3
+			// })()
+			// // 当函数变成立即执行的函数表达式时，表达式中的变量不能从外部访问。
+			// // name = '白人'
+			// // 将 IIFE 分配给一个变量，不是存储 IIFE 本身，而是存储 IIFE 执行后返回的结果。
+			// console.log(r)
+
 				//模拟模块
 			(function () {
 				var a=4396
-				function fuck(){
+				function Fuck(){
 					console.log(++a)
 				}
 				window.$=function(){
@@ -57,11 +55,11 @@
 					}
 				}
 			})()
-			
+
 			console.log($().result)
-			
-			
-			
+
+
+
 			//回 调 函 数
 			document.getElementById('btn').onclick = function() { //DOM事件回调函数
 				alert(this.innerHTML)
@@ -72,6 +70,12 @@
 			}, 2000)
 
 
+			function nigger() {
+				let s = 'http://192.168.156.128//group1/M00/00/00/hOhf-V9ysNOASTKJAAY-dvHy3wY938.jpg'
+				let strings = s.split('//');
+				console.log(strings[2].substring(10))
+			}
+			nigger()
 		</script>
 	</body>
 </html>

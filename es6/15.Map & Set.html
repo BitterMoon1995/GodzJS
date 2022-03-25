@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>
+    G
+</h1>
+</body>
+<script>
+    //1.map
+
+    //声明与get set
+    const map = new Map
+    map.set('saobi1', '糯米佳佳')
+    // console.log(map.get('key1'))
+    map.set('saobi2', 'enndmee')
+    map.set('saobi3', '凛子同学')
+
+    //将 NaN 作为 Map 的键
+    //NaN 也可以作为Map对象的键。虽然 NaN 和任何值甚至和自己都不相等(NaN !== NaN 返回true)，
+    //但下面的例子表明，NaN作为Map的键来说是没有区别的:
+    // const map2 = new Map()
+    // if (NaN !== NaN){
+    //     map2.set(NaN,'骚白丝')
+    // }
+    // console.log(map2.get(NaN))
+    // const anotherNaN = Number('gg')
+    // console.log(map2.get(anotherNaN))
+
+    //迭代
+    // for (let [k,v] of map){
+    //   console.log(v)
+    // }
+    // map.forEach((v,k,map)=>{
+    //   console.log(v.length)
+    // })
+
+    //Map 与数组的关系
+    // let kvArray = [['key1', '贱母狗'], ['key2', '死母畜']]
+    // // 使用常规的Map构造函数可以将一个二维键值对数组转换成一个Map对象
+    // let map3 = new Map(kvArray)
+    // console.log(map3.get('key2'))
+    // // 使用Array.from函数可以将一个Map对象转换成一个二维键值对数组
+    // let tdArray = Array.from(map)
+    // console.log(tdArray)
+    // // 更简洁的方法来做如上同样的事情，使用展开运算符
+    // let arr = [...map]
+    // console.log(arr)
+    // // 或者在键或者值的迭代器上使用Array.from，进而得到只含有键或者值的数组
+    // let keyArr = [...map.keys()]
+    // console.log(keyArr)
+    // let valArr = [...map.values()]
+    // console.log(valArr)
+
+
+    //克隆 合并
+    // 合并两个Map对象时，如果有重复的键值，则后面的会覆盖前面的。
+    // 展开运算符本质上是将Map对象转换成数组。
+    // const map2 = new Map(map)
+    // map2.set('saobi3','颜沁')
+    // map2.set('saobi4','佳茗')
+    // let mergedMap = new Map([...map,...map2])
+    // console.log(mergedMap)
+
+    //2.set
+
+    // let set : Set<any> = new Set();
+    // set.add(4396)
+    // set.add(2800)
+    // set.add('糯米佳佳')
+    // set.add('糯米佳佳')
+    // set.add('杨荔茗')
+    // set.add(undefined)
+    // set.add(undefined)
+    // set.add(NaN)
+    // set.add(NaN)
+    // console.log(set)
+
+    //与array的转换
+    // let arr : any[] = [...set]
+    // let set2 = new Set(['糯米佳佳','糯米佳佳','糯米佳佳',])
+    // let arr = [...set2]
+    // console.log(arr)
+    // let set3 = new Set('糯米佳佳骚逼')
+    // console.log(set3)
+</script>
+</html>

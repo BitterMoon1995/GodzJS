@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script>
+    // （参考 typescript 编译后源码）
+    function F() {}
+    // 定义成员变量
+    F.prototype.hi = function () {
+        console.log('hi')
+    }
+    // 定义静态变量
+    F.hello = function () {
+        console.log('你好，尼哥')
+    }
+
+    let f = new F()
+    f.hi()
+    // f.hello()
+
+</script>
+</html>

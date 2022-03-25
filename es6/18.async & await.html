@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+
+<script>
+    function uncertainAsyncInvoke() {
+        return new Promise(((resolve, reject) => {
+            setTimeout(() => {
+                let random = Math.floor(Math.random() * 2) + 1
+                if (random <= 1) {
+                    resolve('fulfilled,result: ' + random)
+                } else {
+                    reject('rejected,reason: 尼哥必死')
+                }
+            }, 1000)
+        }))
+    }
+
+    function fulfilledAI() {
+        return new Promise((resolve => resolve('兑现承诺')))
+    }
+
+    function rejectedAI() {
+        return new Promise((((resolve, reject) => reject('拒绝承诺'))))
+    }
+
+    function normalFunc() {
+        return '尼哥大黑人'
+    }
+
+    //《一. async》
+    // 1.语法：
+    // async function name([param[, param[, ... param]]]) {
+    //     statements
+    // }
+    // 2.参数：不解释
+    // 3.【返回值】：async函数一定会返回一个promise对象。如果一个async函数的返回值看起来不是promise，
+    // 那么它将会被隐式地包装在一个promise中。
+    // 另外，【冷知识】：没有return语句的函数，默认返回一个undefined
+
+    // 周神释经：【async存在的意义】：语法上async函数会自动封装返回promise对象，但是没看出多大用，
+    // 因为异步调用的结果根本无法返回（只能得到Promise {<pending>: undefined}），
+    // 所以最大的意义应该就是标记这个函数中存在异步请求/调用（await）
+
+    // function f() {
+    //
+    // }
+    // console.log(f())
+
+    // async function asyncF1() {
+    //
+    // }
+    //
+    // async function asyncF2() {
+    //     return '大学啃老网畜'
+    // }
+
+    // console.log(asyncF1()) //Promise {<fulfilled>: undefined}
+    // console.log(asyncF2()) //Promise{<fulfilled>: 大学啃老网畜}
+
+    // async function asyncF3() {
+    //     return new Promise((resolve => resolve('resolve nigger')))
+    // }
+    //
+    // async function asyncF4() {
+    //     return uncertainAsyncInvoke()
+    // }
+
+    // console.log(asyncF3()) // 立即输出Promise{<fulfilled>: resolve nigger}
+    // console.log(asyncF4()) // 看过多久在控制台里展开观察这个promise对象。0~1秒：输出Promise{<pending>: undefined}，
+    // 1秒后：输出Promise{<fulfilled>: fulfilled,result: 1}
+    // 或 Promise{<rejected>: rejected,reason: 尼哥必死}
+    // 说明随着异步过程的调用完成，promise的状态确实发生了改变
+
+    //【二. await】
+    // await  操作符用于等待一个Promise 对象。它只能在异步函数 async function 中使用。
+    // 语法：[返回值] = await 表达式; 表达式：一个 Promise 对象或者任何要等待的值。
+    // 返回值：返回 Promise 对象的处理结果。如果等待的不是 Promise 对象，则返回该值本身。
+
+    // function notAsync() {
+    //     let r = await normalFunc() //The 'await' operator can only be used in an 'async' function
+    // }
+
+    // await 表达式会暂停当前 async function 的执行，等待 Promise 处理完成（fulfilled 或 rejected）。
+    // 若 Promise 正常处理(fulfilled)，其回调的resolve函数参数作为 await 表达式的值，继续执行 async function。
+    // async function asyncF5() {
+    //     let res = await fulfilledAI()
+    //     console.log(res)
+    // }
+    //
+    // // asyncF5()
+    //
+    // // 若 Promise 处理异常(rejected)，await 表达式会把 Promise 的异常原因抛出。
+    // async function asyncF6() {
+    //     try {
+    //         await rejectedAI()
+    //     } catch (e) {
+    //         console.log(e)
+    //     }
+    // }
+    //
+    // asyncF6()
+    //
+    // // 另外，如果 await 操作符后的表达式的值不是一个 Promise，则返回该值本身。
+    // async function asyncF7() {
+    //     let res = await normalFunc()
+    //     console.log(res)
+    // }
+    //
+    // // asyncF7()
+
+    // 前言：浏览器中的JavaScript进程就是单线程的，就是只有一个线程。
+    // await、promise这种异步语法就是改变这个线程对JS代码的执行顺序，而不是说什么挂起主线程新开一个线程之类的。
+
+    // 小细节1：await不光必须和async配套使用，【还必须和resolve 或 reject配套使用】
+    // 小细节2：加不加await，决定的是在异步操作完成之前，是否暂停JS线程对该async函数的执行。
+
+    async function aurora() {
+        console.log('1.aurora内部异步任务之前逻辑...')
+        // 如果这里不await，JS线程执行1后会在2秒后把2入队，然后顺序执行3、4，
+        // 2秒后2出队，执行2内代码。所以顺序是1 3 4 2
+        // 如果这里await，JS线程在aurora函数内部的执行会被暂停，转而执行外部调用该函数之后的代码，也就是4；
+        // 直到2中Promise resolve 或 reject后，JS线程回到aurora函数内部，执行new Promise之后的操作，即3，
+        // 所以顺序是1 4 2 3
+        try {
+            await new Promise((resolve, reject) => setTimeout(() => {
+                // 如果这里不resolve 或 reject，aurora永远阻塞，127行及之后永远不会执行
+                resolve('resolve：继续在五视混')
+                reject('reject：从五视滚蛋')
+                console.log('2.异步任务执行完毕：润畜')
+            }, 2000))
+        } catch (e) {
+            console.log(e)
+        }
+
+        console.log('3.aurora内部异步任务后续逻辑...')
+    }
+
+    // aurora()
+    // console.log('4.外部调用aurora函数之后逻辑...')
+
+    // 总结，【await存在的意义】：
+    // 1. 将其后promise对象resolve的结果解析为普通对象，或 抛出reject的结果
+    // ★2. 在其后promise对象fulfilled 或 rejected之前，
+    // 【暂停JS线程对整个（await所处的）函数的执行】，而非继续执行函数内部await表达式之后的代码
+
+    // 《三. 基础：JavaScript异步模型与事件循环》
+
+    // 反复执行这段代码，结果都是先打印1再打印2因为，setTimeout是个异步任务，第二个参数真正的含义是，在0毫秒之后，
+    // 将代码插入任务队列，而不是在0毫秒之后执行。当插入任务队列后，主线程会继续执行后续的代码，也就是打印结果1，
+    // 如果此时当前的同步代码已经执行完毕，则主线程立刻会从任务队列中取出最新任务执行。再打印结果2。
+    // setTimeout(() => console.log(1),0)
+    // console.log(2)
+
+    // async函数的函数体可以被看作是由0个或者多个await表达式分割开来的。
+    // 从第一行代码直到（并包括）第一个await表达式（如果有的话）都是同步运行的。这样的话，
+    // 一个不含await表达式的async函数是会同步运行的。然而，如果函数体内有一个await表达式，async函数就一定会异步执行。
+
+    // async function syncFunc() {
+    //     console.log('nig')
+    // }
+    // syncFunc()
+
+    // async function foo() {
+    //     await 1
+    // }
+    // //等价于：
+    // async function foo_() {
+    //     await new Promise(resolve => 1)
+    // }
+
+    // 在await表达式之后的代码可以被认为是存在在链式调用的then回调中，
+    // 多个await表达式都将加入链式调用的then回调中，返回值将作为最后一个then回调的返回值。
+
+    // 使用await执行两次promise，整个foo函数的执行将会被分为三个阶段。
+    async function foo() {
+        console.log('阶段一：在遇到第一个await前，顺序同步执行')
+
+        await new Promise((resolve) => {
+            console.log('阶段二：等待第一个promise执行结束，同时控制权交还给调用foo()的函数')
+            setTimeout(() => {
+                console.log('异步操作执行完毕')
+                resolve(4396)
+            }, 3000)
+        })
+        console.log('阶段三：第一个promise完结的时候，控制权将重新回到foo函数内。')
+        console.log('foo函数内部后续逻辑......')
+    }
+
+    // foo()
+    // console.log('外部调用foo()之后的逻辑......')
+
+    //《四. 异步并发编程的落地》
+
+    //同步请求
+    function syncRequest() {
+        //实例化XmlHttpRequest对象
+        const xhr = new XMLHttpRequest();
+        //使用GET方式请求指定网址的页面
+        xhr.open("GET", "http://localhost:8840/ms/ayaka/getTest", false);
+        //发送空内容请求。此方法为异步方法，可以与前后同步语句交换顺序
+        xhr.send(null);
+
+        if (xhr.status === 200) {//200状态码表示正常
+            console.log(xhr.responseText);
+        } else {
+            console.log("Error occurred:" + xhr.statusText)
+        }
+    }
+
+    // syncRequest()
+
+    // 注意：promise链不是一次就构建好的，相反，promise链是分阶段构造的，因此在处理异步函数时必须注意对错误函数的处理。
+    // async function asyncFunc9() {
+    //     const p1 = new Promise((resolve) => setTimeout(() => resolve('1'), 1000))
+    //     const p2 = new Promise((_, reject) => setTimeout(() => reject('尼哥出事'), 500))
+    //     // 使用 Promise.all或者Promise.allSettled捕捉链上所有的错误
+    //     return Promise.all([p1, p2])
+    // }
+    // asyncFunc9().catch((e) => console.log(e))
+
+    //《四. 并行编程的模拟演示》
+    let resolveAfter2Seconds = function () {
+        console.log("开始执行较慢的异步请求----");
+        return new Promise(resolve => {
+            setTimeout(function () {
+                resolve('slow request result...')
+                console.log('慢请求内部逻辑执行结束----')
+            }, 2000)
+        })
+    }
+
+    let resolveAfter1Seconds = function () {
+        console.log("开始执行较快的异步请求----");
+        return new Promise(resolve => {
+            setTimeout(function () {
+                resolve('fast request result...')
+                console.log('快请求内部逻辑执行结束----')
+            }, 1000)
+        })
+    }
+
+    //在sequentialStart中，程序在第一个await停留了2秒，然后又在第二个await停留了1秒。
+    // 直到第一个计时器结束后，第二个计时器才被创建。程序需要3秒执行完毕。
+    async function sequentialExecute() {
+        console.log('开始顺序执行异步任务----')
+        let slow = await resolveAfter2Seconds()
+        console.log('得到较慢异步请求结果：', slow)
+        let fast = await resolveAfter1Seconds()
+        console.log('得到较快异步请求结果：', fast)
+    }
+
+    // sequentialExecute()
+
+    // 在 concurrentStart中，两个计时器被同时创建，然后执行await。这两个计时器同时运行，这意味着程序完成运行只需要2秒。
+    // 但是 await 仍旧是顺序执行的，第二个 await 还是得等待第一个执行完。在这个例子中，这使得先运行结束的输出出现在最慢的输出之后。
+    async function concurrentWithAwait() {
+        console.log('使用 await 开始执行异步任务----')
+        const slow = resolveAfter2Seconds()
+        const fast = resolveAfter1Seconds()
+        // 因为有await，所以执行到这里时concurrentWithAwait函数让出JS线程，直到resolveAfter2Seconds()被兑现或拒绝，
+        // JS线程才重新回到函数内执行下一行，所以fast要等slow，总时长等于fast + slow
+        console.log('得到较慢异步请求结果：', await slow)
+        console.log('得到较快异步请求结果：', await fast)
+    }
+
+    // concurrentWithAwait()
+
+    // 使用Promise.all(values: Iterable)，如果都resolved，总执行时长取决于最长的那个promise，
+    // 然后只返回一个promise（resolve全部结果），
+    // 所以功能上与WithAwait是等效的，快请求还是要等到请求执行完才一起返回结果。但是这里做了异常处理。
+    async function concurrentWithPromiseAll() {
+        console.log('使用 Promise.all 开始执行异步任务----')
+        Promise.all([resolveAfter2Seconds(), resolveAfter1Seconds()])
+            .then((res) => console.log(res), (error) => console.log(error))
+    }
+
+    // concurrentWithPromiseAll()
+
+    // 真正的并行执行，但是没有集中处理异常
+    async function concurrentWithPromiseThen() {
+        console.log('使用 Promise.then 开始执行异步任务----')
+        // 调用resolveAfter2Seconds()时将其返回值加入MQ，然后不等待直接执行下一行，
+        // 最后分别获取到结果，执行时长取决于耗时最长的异步任务
+        resolveAfter2Seconds().then(res => console.log(res), error => console.log(error))
+        resolveAfter1Seconds().then(res => console.log(res), error => console.log(error))
+    }
+
+    // concurrentWithPromiseThen()
+
+    // 加入Promise.all，配合IIFE，这样可以集中处理异常和统一返回结果
+    async function concurrentWithAwaitAndPromiseAll() {
+        console.log('使用 await Promise.all 开始执行异步任务----')
+        // 以下的Promise.all、await、Promise.catch都是异步调用
+        Promise.all([
+            // 这里的await没有使con...All函数让出JS线程，
+            // 而是仅仅使这个IIFE（IIFE也是函数）让出了，所以JS线程就可以无等待执行下一行了，
+            // 最后两个await表达式几乎同时都进MQ
+            (async () => console.log(await resolveAfter2Seconds()))(),
+            (async () => console.log(await resolveAfter1Seconds()))()
+        ]).catch(error => console.log(error))
+    }
+
+    concurrentWithAwaitAndPromiseAll()
+    console.log('嘻嘻')
+
+    function f() {
+        (function () {
+            console.log(1)
+        })()
+        console.log(2)
+    }
+
+    f()
+
+</script>
+</html>

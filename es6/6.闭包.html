@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title></title>
-    <script src="js/myModule.js"></script>
-    <script src="js/myModule2.js"></script>
+    <script src="../js/myModule.js"></script>
+    <script src="../js/myModule2.js"></script>
 </head>
 <body>
 <script>
@@ -42,7 +42,7 @@
         return fn4
     }
 
-	const f = fn3()
+	const func4 = fn3()
 	// fn3一执行完就被回收了，包括其内的a、fn4，但是
     // ★★★因为f指向了fn4之前指向的函数对象，所以该对象不会被回收
     f()

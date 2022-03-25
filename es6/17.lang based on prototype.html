@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script>
+    /*
+    一. 《关于构造函数、原型对象、实例对象、原型链，周神箴言》：
+    （函数约定 函数==构造函数，原型==原型对象，实例==实例对象）
+     */
+    // function Function() {
+    //     this.name = '小乌龟'
+    // }
+
+    //1.任何函数都可以看作是构造函数，与设不设置属性或者是否有返回值没有任何关系
+    // let instance = new Function()
+
+    //2.所有函数都有一个prototype属性，这个属性指向一个【对象】，即这个函数的原型对象。
+    // 所有的原型对象都有一个constructor属性，这个属性指向一个函数，就是它所对应的构造函数
+    // let prototypeObject = Function.prototype;
+    // console.log(prototypeObject.constructor === Function)//都为true
+
+    //3.所有的对象都是实例对象，不存在所谓“类对象”。
+    // 当 JavaScript 执行 new 操作符时，它会先创建一个普通对象，
+    // 并将这个普通对象中的 [[prototype]] 指向 构造函数的原型对象。
+    // 然后再把这个普通对象设置为执行 WorkerBee 构造函数时 this  的值。
+    // console.log(Object.getPrototypeOf(instance) === prototypeObject)
+    // console.log(instance.name)
+
+    //4.每一个对象的 [[Prototype]] 决定其用于检索属性的原型链。当构造函数执行完成后，所有的属性都被设置完毕，
+    // JavaScript 返回之前创建的对象，通过赋值语句将它的引用赋值给变量 mark。
+    // 这个过程不会显式的将 mark所继承的原型链中的属性作为本地属性存放在 mark 对象中。当访问属性时，
+    // JavaScript 将首先检查对象自身中是否存在该属性，如果有，则返回该属性的值。如果不存在，
+    // JavaScript会检查原型对象是否具有该属性（使用内置的 [[Prototype]] ），并以此类推，使对象的原型对象形成一条链
+    // 如果原型链中的某个对象包含该属性，则返回这个属性的值。如果遍历整条原型链都没有找到该属性，
+    // JavaScript 则认为对象中不存在该属性，返回一个 undefined。
+    // console.log(instance.age) //undefined
+
+    //5.注意在构造函数中设置的属性，是实例的本地属性，在原型中是没有的
+    // console.log(Object.getPrototypeOf(instance).name) //undefined
+
+    //6.在 JavaScript 中，您可以在运行时为任何对象添加属性，而不必受限于构造函数提供的属性。
+    // instance.age = 16
+
+    //7.如果您向某个构造函数的原型对象中添加新的属性，那么该属性将添加到从这个原型中继承属性的所有对象的中。
+    // Function.prototype.clan = '神里家'
+
+    //8.【原型链存在的意义：实现运行时设置并传递层级结构中的属性】
+    // console.log(instance)
+
+    /*
+    二.《实现继承（层级结构）》
+     */
+
+    // function Employee() {
+    //     this.name = 'Nig·Bees'
+    //     this.dept = 'general'
+    // }
+
+    // function Manager() {
+    //     // 步骤一. 属性传递，有两种写法
+    //     // 写法①，来自MDN官文
+    //     // Employee.call(this)
+    //
+    //     // 写法②，来自typescript编译后源码
+    //     let emp = new Employee()
+    //     for (let p in emp) {
+    //         if (emp.hasOwnProperty(p)) {
+    //             this[p] = emp[p]
+    //         }
+    //     }
+    //
+    //     this.reports = []
+    // }
+    //
+    //
+    // Employee.prototype.age = 28
+    // 【原型链存在的意义：实现运行时设置并传递层级结构中的属性】，因为后面的研究可以发现，
+    // 【必须显式地设置原型才能确保动态的继承】
+    // Employee.salary = 1600
+    // 步骤二. 原型设置，将子函数的原型对象的原型对象设置为父函数的原型对象，写法又有点小多
+    // 写法①，MDN官文、typescript编译后源码
+    // Manager.prototype = Object.create(Employee.prototype)
+
+    // 写法②，来自MDN官文，好处是可以省略步骤一，因为原型对象的原型是父函数的new实例对象，
+    // 是自带父函数的一切默认属性的，原型链上是有东西的。以后无特殊情况都这么写。
+    // 表面简单，实际隐藏着宇宙星空最黑暗的秘密：
+    //为实现层级结构，在给“子类的”函数设置原型对象的时候，其实根本不拘泥于【那一个】对象，
+    //这个对象可以是任一个对象，只要这个对象的【原型的原型】是“父类的”原型对象
+    // Manager.prototype = new Employee()
+    // console.log(Employee.prototype === new Employee()) //false
+    // console.log(Employee.prototype === Object.getPrototypeOf(new Employee())) //就是它！
+
+    // let manager = new Manager()
+    // console.log(manager)
+    // console.log(manager.age)
+
+    // 三.《带参构造》
+    function Employee(name, dept) {
+        this.name = name || '未知员工名'
+        this.dept = dept || '未知部门'
+    }
+
+    // function WorkerBee(projects) {
+    //     this.projects = projects || ['乐蜗商城','乐蜗传销'];
+    // }
+    // WorkerBee.prototype = new Employee()
+    //
+    // function Engineer (machine) {
+    //     this.machine = machine || "";
+    // }
+    // Engineer.prototype = new WorkerBee()
+    //
+    // WorkerBee.prototype.fuck = [1,2,3]
+    // let engineer = new Engineer('UAV')
+    // console.log(engineer)
+
+    // 为诸如 name 这样的继承属性指定初始值。需要重写原型链上除始祖巨人外的所有构造函数
+
+    function WorkerBee(name, dept, projects) {
+        // this = 在执行“this.base(name, '工程部', projects)”时返回的WorkerBee实例，
+        // 因为是对象.方法，所以那个this=这个this=engineer，所以最后可以看到engineer的各个属性都是本地的，不在原型链上
+        this.base = Employee
+        this.base(name, dept)
+        this.projects = projects || []
+    }
+
+    WorkerBee.prototype = new Employee()
+
+    // function Engineer(name, projects, machine) {
+    //     // 将WorkerBee构造设置为成员方法，并调用该方法，
+    //     // 等价于WorkerBee.call(this, [args...])，建议用这个，因为少了一行
+    //     WorkerBee.apply(this, [name, '工程部', projects])
+    //     // this.base = WorkerBee // this = engineer，因为是new调用
+    //     // this.base(name, '工程部', projects)
+    //     this.machine = machine || ''
+    // }
+    //
+    // Engineer.prototype = new WorkerBee()
+
+    // 你可以认为，在 Engineer 的构造器中调用了 WorkerBee 的构造器，也就为 Engineer 对象设置好了继承关系。
+    // 事实并非如此。调用 WorkerBee 构造器确保了Engineer 对象以所有在构造器中所指定的属性被调用。但是，
+    // 如果后续在 Employee 或者 WorkerBee 原型中添加了属性，那些属性不会被 Engineer 对象继承。
+    // 您必须显式地设置原型才能确保动态的继承。
+    //
+    // let engineer = new Engineer('周杰伦', ['卓行商城', '卓行旅游'], '三轮车')
+    // console.log(engineer)
+
+    // Employee.prototype.age = 39
+    // Object.prototype.age = 38
+    // console.log(engineer.age)
+
+    // 四.《本地值与继承值》
+
+    // function WorkerBee () {
+    //     this.projects = [];
+    // }
+    // WorkerBee.prototype = new Employee;
+    //
+    // let amy = new WorkerBee;
+    // // 乍一看，你可能觉得新的值会传播给所有 Employee 的实例。然而，并非如此。
+    // // 在创建 Employee 对象的任意实例时，该实例的 name 属性将获得一个本地值（空的字符串）。
+    // // 这就意味着在创建一个新的 Employee 对象作为 WorkerBee 的原型时，WorkerBee.prototype 的 name 属性将具有一个本地值。
+    // // 因此，当 JavaScript 查找 amy 对象（WorkerBee 的实例）的 name 属性时，
+    // // JavaScript 将找到 WorkerBee.prototype 中的本地值。因此，也就不会继续在原型链中向上找到 Employee.prototype 了。
+    // Employee.prototype.name = "尼哥买提"
+    // console.log(amy.name)
+
+    //如果想在运行时修改一个对象的属性值并且希望该值被所有该对象的后代所继承，您就不能在该对象的构造器函数中定义该属性。
+    // 而应该将该属性添加到该对象所关联的原型中。这样，Cat.prototype对象将不再具有name属性，
+    // 而不得不向上查找到Animal.prototype对象中的name属性
+    // function Animal() {
+    //
+    // }
+    // Animal.prototype.name = '动物'
+    //
+    // function Cat() {
+    //
+    // }
+    // Cat.prototype = new Animal()
+    //
+    // let cat = new Cat()
+    // console.log(cat.name)
+    // Animal.prototype.name = '猫宝宝'
+    // console.log(cat.name)
+
+    //五.《判断实例的关系》
+
+    // function F() {
+    //
+    // }
+    // let func4 = new F()
+    //
+    // // 每个对象都有一个 __proto__ 对象属性（除了 Object）；每个函数都有一个 prototype 对象属性。
+    // // 因此，通过“原型继承”，对象与其它对象之间形成关系。通过比较对象的 __proto__ 属性和函数的 prototype 属性，
+    // // 可以检测对象的继承关系。
+    // //语法糖instanceof
+    // console.log(func4 instanceof F)
+    // //本质上等价于：
+    // console.log(Object.getPrototypeOf(func4) === F.prototype)
+
+    //沿用《三》中的定义
+    // let engineer = new Engineer('周神', ['乐蜗商城', '卓行文旅', '五视管控'], '宇宙机')
+    // console.log(engineer instanceof Engineer)
+    // console.log(engineer.__proto__ === Engineer.prototype,
+    //     engineer.__proto__.__proto__ === WorkerBee.prototype,
+    //     engineer.__proto__.__proto__.__proto__ === Employee.prototype,
+    //     engineer.__proto__.__proto__.__proto__.__proto__ === Object.prototype,
+    //     engineer.__proto__.__proto__.__proto__.__proto__.__proto__ == null)
+    //
+    // //基于以上结论，可以简单自己实现一下这个语法糖
+    // function isInstance(instance, constructor) {
+    //     while (instance !== null) {
+    //         if (instance.__proto__ === constructor.prototype) {
+    //             return true
+    //         }
+    //         instance = instance.__proto__
+    //     }
+    //     return false
+    // }
+    // console.log(isInstance(engineer,Object))
+
+    // 六.《没有多重继承》
+    //JavaScript 不支持多重继承。JavaScript 属性值的继承是在运行时通过检索对象的原型链来实现的。
+    // 因为对象只有一个原型与之关联，所以 JavaScript 无法动态地从多个原型链中继承。在 JavaScript 中，
+    // 可以在构造器函数中调用多个其它的构造器函数。这一点造成了多重继承的假象。
+    // function Hobbyist(hobby) {
+    //     this.hobby = hobby || "scuba";
+    // }
+    //
+    // //沿用《三》中的定义
+    // function Engineer(name, projs, mach, hobby) {
+    //     this.base1 = WorkerBee;
+    //     this.base1(name, "engineering", projs);
+    //     this.base2 = Hobbyist;
+    //     this.base2(hobby);
+    //     this.machine = mach || "";
+    // }
+    //
+    // Engineer.prototype = new WorkerBee;
+    //
+    // let dennis = new Engineer("Doe, Dennis", ["collabra"], "陀飞轮儿", "hugo")
+    // console.log(dennis)
+    //
+    // // dennis 确实从 Hobbyist 构造器中获得了 hobby 属性。但是，假设添加了一个属性到 Hobbyist 构造器的原型：
+    //
+    // Hobbyist.prototype.equipment = ["mask", "fins", "regulator", "bcd"]
+    // // dennis 对象不会继承这个新属性。
+</script>
+</html>
