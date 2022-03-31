@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script>
+    // 《一 Object.seal》
+    // let pigJZH = {
+    //     name: 'pigJZH',
+    //     hobby: '打炉石酒馆'
+    // }
+    // // 本来可以随意增 / 删 属性
+    // pigJZH.age = 12
+    // delete pigJZH.hobby
+    // console.log(pigJZH)
+    //
+    // // seal后，虽然对对象属性的增/删可以过编
+    // Object.seal(pigJZH)
+    // pigJZH.money = 0
+    // delete pigJZH.name
+    // // 但是实际上是未生效的
+    // console.log(pigJZH)
+    // // 当前已有的属性的值仍然可以更改，不受影响
+    // pigJZH.name = '尼哥爬'
+    // console.log(pigJZH)
+
+    // 二.《Object.defineProperty》
+    // 语法：Object.defineProperty(obj, prop, descriptor)。
+    // 参数：obj：要定义属性的对象。prop：要定义或修改的属性的名称或 Symbol 。descriptor：要定义或修改的属性描述符。
+    // Object.defineProperty() 方法会直接在一个对象上定义一个新属性，或者修改一个对象的现有属性，并返回此对象。
+    // 该方法允许精确地添加或修改对象的属性。通过赋值操作添加的普通属性是可枚举的，在枚举对象属性时会被枚举到（for...in 或 Object.keys 方法），可以改变这些属性的值，也可以删除这些属性。这个方法允许修改默认的额外选项（或配置）。默认情况下，使用 Object.defineProperty() 添加的属性值是不可修改（immutable）的。
+    // 对象里目前存在的属性描述符有两种主要形式：数据描述符和存取描述符。数据描述符是一个具有值的属性，该值可以是可写的，也可以是不可写的。存取描述符是由 getter 函数和 setter 函数所描述的属性。一个描述符只能是这两者其中之一；不能同时是两者。
+    // 描述符默认值汇总：
+    // 拥有布尔值的键 configurable、enumerable 和 writable 的默认值都是 false。
+    // 属性值和函数的键 value、get 和 set 字段的默认值为 undefined。
+    // 描述符可拥有的键值：
+    //              configurable	enumerable	value	writable	get	    set
+    // 数据描述符	    可以	            可以	        可以	    可以	        不可以	不可以
+    // 存取描述符	    可以	            可以	        不可以	不可以	    可以	    可以
+
+    // 示例1：演示数据描述符的默认值。注意排除了继承关系。
+    // let pigJZH = {
+    //     name: '简猪狗',
+    //     speciality: function () {
+    //         console.log('世界赛红温')
+    //     }
+    // }
+    // let descriptor = Object.create(null)
+    // descriptor.value = 0
+    // Object.defineProperty(pigJZH, 'championNum',descriptor)
+    // console.log(pigJZH)
+
+    // Writable 属性：当 writable 属性设置为 false 时，该属性被称为“不可写的”。它不能被重新赋值。
+    // pigJZH.championNum = 11 //无效
+    // console.log(pigJZH)
+
+    // Enumerable 属性：enumerable 定义了对象的属性是否可以在 for...in 循环和 Object.keys() 中被枚举。
+    // for (let pigJZHKey in pigJZH) {
+    //     console.log(pigJZHKey)
+    // }
+
+    // let keys = Object.keys(pigJZH);
+    // console.log(keys)
+
+    // Configurable 属性：表示对象的属性是否可以被删除，以及除 value 和 writable 特性外的其他特性是否可以被修改。
+    // delete pigJZH.championNum
+    // console.log(pigJZH)
+
+    // 示例2：在对象中添加一个设置了存取描述符属性的示例
+    // let dress = {
+    //     type: 'lolita'
+    // }
+    // Object.defineProperty(dress, 'name', {
+    //     get() {
+    //         return '芙拉小姐'
+    //     },
+    //     // configurable enumerable是公用的，get set 与 value writable是互斥的
+    //     // value: '小仙裙', //Uncaught TypeError: Invalid property descriptor. Cannot both specify accessors and a value or writable attribute
+    //     set(v) {
+    //         name = v
+    //         // this.name = v 别this，要GG
+    //     },
+    //     configurable: true,
+    //     enumerable: true
+    // })
+    // console.log(dress)
+    // dress.name = '春日玫瑰'
+    // console.log(dress.name)
+    //
+    // console.log(Object.keys(dress))
+    // delete dress.name
+    // console.log(dress.name)
+
+    //《三. Object.getOwnPropertyDescriptor》
+    // Object.getOwnPropertyDescriptor() 方法返回指定对象上一个自有属性对应的属性描述符。
+    // （自有属性指的是直接赋予该对象的属性，不需要从原型链上进行查找的属性）
+
+    // 语法
+    // Object.getOwnPropertyDescriptor(obj, prop)
+    // 参数 obj 需要查找的目标对象 prop 目标对象内属性名称
+    function WomenWear() {
+    }
+
+    WomenWear.prototype.suitablePeople = '变装天使    或女人'
+
+    function InnerCloth() {
+    }
+
+    InnerCloth.prototype = new WomenWear()
+    InnerCloth.type = '内搭'
+    sweetDiaodai = new InnerCloth()
+    console.log(sweetDiaodai.suitablePeople)
+
+    sweetDiaodai.name = '夏季新款甜美少女可爱纯欲风设计感蝴蝶结蕾丝内搭打底吊带背心'
+    sweetDiaodai.wear = function () {
+        console.log('骚度够但限制上身长度，寄')
+    }
+
+    // console.log(Object.getOwnPropertyDescriptor(sweetDiaodai, 'name'))
+    console.log(Object.getOwnPropertyDescriptor(sweetDiaodai, 'wear'))
+    // undefined
+    console.log(Object.getOwnPropertyDescriptor(sweetDiaodai, 'suitablePeople'))
+
+</script>
+</html>

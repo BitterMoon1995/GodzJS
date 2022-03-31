@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>arguments对象</title>
+</head>
+<body>
+
+</body>
+<script>
+    // 《一. 基础》
+    // arguments 是一个对应于传递给函数的参数的类数组对象。
+    // function f(a, b, c) {
+    //     console.log(arguments)
+    //     console.log(arguments[0])
+    //     console.log(arguments[1])
+    //     console.log(arguments[2])
+    // }
+    // f('骚丝','骚腿','骚袜')
+
+    // 无法在箭头函数中使用
+    // let arrow = (a, b, c) => {
+    //     console.log(arguments) //Uncaught ReferenceError: arguments is not defined
+    // }
+    // arrow(1, 2, 3)
+
+    // arguments对象是所有（非箭头）函数中都可用的局部变量。你可以使用arguments对象在函数中引用函数的参数。
+    // 此对象包含传递给函数的每个参数，第一个参数在索引0处。例如，如果一个函数传递了三个参数，你可以以如下方式引用他们：
+    // arguments[0] arguments[1] arguments[2]
+    // 参数也可以被设置：
+    // arguments[1] = 'new value';
+
+    // 《二. 不是Array》
+    // arguments对象不是一个 Array 。它类似于Array，但除了length属性和索引元素之外没有任何Array属性。
+    // 例如，它没有 push 方法。
+    // function f2(a, b, c, d) {
+    //     console.log(arguments.length) //输出的是实际传入的参数数量
+    //     console.log(f2.length)
+    //     // arguments.push(3) //Uncaught TypeError: arguments.push is not a function
+    // }
+    //
+    // f2(4, 4, 7)
+
+    // 但是它可以被转换为一个真正的Array
+    // function f3(a, b, c, d) {
+    //     let arr
+    //     arr = Array.from(arguments);
+    //     // arr = [...arguments]
+    //
+    //     // 警告：对参数使用slice会阻止某些JavaScript引擎中的优化
+    //     // arr = [].slice.call(arguments)
+    //     // arr = Array.prototype.slice.call(arguments)
+    //
+    //     arr.push(7)
+    //     console.log(arr)
+    // }
+    // f3(4,3,9,6)
+
+    // 《三. Proxy & Reflect 中的妙用》
+    const skirt = {
+        color: '纯黑色',
+        shape: '公主裙',
+        length: '短裙'
+    }
+    const skirtPx = new Proxy(skirt, {
+        get(target, p, receiver) {
+            // 释经：namespace Reflect 与 interface ProxyHandler中的方法一一对应，
+            // 实现完全相同。方法列表当然也完全相同，所以内外调用时内层可以直接...arguments，非常炫。
+            Reflect.get(...arguments)
+        },
+        set(target, p, value, receiver) {
+            Reflect.set(...arguments)
+        }
+    })
+    console.log(skirt.length)
+    skirt.price = 69
+
+
+</script>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue响应性原理</title>
+</head>
+<body>
+
+</body>
+<script type="module">
+    // 部分原理与演示代码......
+
+    //《观察者模式》
+    // function Observer() {
+    //     this.customers = []
+    //
+    //     // 1.注册
+    //     this.register = function (fn) {
+    //         this.customers.push(fn)
+    //     }
+    //
+    //     // 2.发布
+    //     this.notify = function () {
+    //         for (let customer of this.customers) {
+    //             customer()
+    //         }
+    //         this.customers = []
+    //     }
+    // }
+    //
+    // let observer = new Observer()
+    // observer.register(function () {
+    //     console.log('买lo裙')
+    // })
+    // observer.register(function () {
+    //     console.log('买jk')
+    // })
+    // observer.register(function () {
+    //     console.log('买裤袜')
+    // })
+    // observer.notify()
+
+    //《一. Vue 如何知道哪些代码在执行————通过“副作用”》
+    // let val1 = 2
+    // let val2 = 3
+    // let sum = val1 + val2
+    // console.log(sum)
+    //
+    // const updateSum = () => {
+    //     sum = val1 + val2
+    // }
+    //
+    // const runningEffects = []
+    // const createEffect = fn => {
+    //     // 将传来的 fn 包裹在一个副作用函数中
+    //     const effect = () => {
+    //         当我们的副作用被调用时，在调用 fn 之前，它会把自己推到 runningEffects 数组中。
+    //         这个数组可以用来检查当前正在运行的副作用。
+    //         runningEffects.push(effect)
+    //         fn()
+    //         runningEffects.pop()
+    //     }
+    //
+    //     // 立即自动执行副作用
+    //     effect()
+    // }
+    //
+    // val2 = 8
+    // createEffect(updateSum)
+    // console.log(sum)
+
+    //《二. Vue 如何跟踪变化————使用 proxy 跟踪对象 property 的变化》
+    // const dinner = {
+    //     meal: 'barbecue'
+    // }
+    //
+    // // 它将检查当前运行的是哪个副作用，并将其与 target 和 property 记录在一起。
+    // // 这就是 Vue 如何知道这个 property 是该副作用的依赖项。
+    // function track(target, property) {
+    //
+    // }
+    //
+    // // trigger 函数查找哪些副作用依赖于该 property 并执行它们。
+    // function trigger(target, property) {
+    //
+    // }
+    //
+    // const dinnerProxy = new Proxy(dinner, {
+    //     get(target, p, receiver) {
+    //         // console.log('intercepted!')
+    //         // return target[p]
+    //         // console.log(arguments)
+    //         track(target, p)
+    //         return Reflect.get(...arguments)
+    //     },
+    //     set(target, p, value, receiver) {
+    //         trigger(target, p)
+    //         return Reflect.set(...arguments)
+    //     }
+    // })
+    //
+    // // 现在，我们对 Vue 如何实现这些关键步骤有了答案：
+    // // 当一个值被读取时进行追踪：proxy 的 get 处理函数中 track 函数记录了该 property 和当前副作用。
+    // // 当某个值改变时进行检测：在 proxy 上调用 set 处理函数。
+    // // 重新运行代码来读取原始值：trigger 函数查找哪些副作用依赖于该 property 并执行它们。
+    // console.log(dinnerProxy.meal)
+
+    //《三. 尚硅谷》
+
+    //1.defineProperty
+
+    //2.defineReactive
+
+
+    // 3.
+    function sayKeyName(obj) {
+        function sayName(obj) {
+            if (!(obj instanceof Array) && !(obj instanceof Object)) {
+                throw new TypeError('obj 类型错误！');
+            }
+
+            if (obj instanceof Array) {
+                for (let i = 0; i < obj.length; ++i) {
+                    console.log('数组索引：', i, '数组值：', obj[i]);
+                    if (obj[i] instanceof Object) {
+                        sayName(obj[i]);
+                    }
+                }
+            } else {
+                for (const key in obj) {
+                    console.log('属性键：', key, '属性值：', obj[key]);
+                    if (obj[key] instanceof Object) {
+                        sayName(obj[key]);
+                    }
+                }
+            }
+        }
+
+        sayName(obj);
+    }
+
+    const obj = {
+        name: '周薇儿',
+        lang: ['java', 'js', 'ts', 'go'],
+        cloth: {
+            dress: {
+                lolita: {
+                    op: {
+                        name: '芙拉小姐'
+                    },
+                    jsk: {
+                        name: '不落海'
+                    }
+                }
+            }
+        }
+    }
+    // sayKeyName(obj);
+
+</script>
+</html>

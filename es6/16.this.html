@@ -33,8 +33,8 @@
     // }
     // console.log(f1())
     //
-    // o = {name: '我是o'}
-    // console.log(f1.call(o))
+    // pigJZH = {name: '我是o'}
+    // console.log(f1.call(pigJZH))
 
 
     //3.类上下文：this 在 类 中的表现与在函数中类似，，因为类本质上也是函数，但也有一些区别和注意事项。
@@ -71,10 +71,10 @@
     //     return this.a + this.b + c + d
     // }
     //
-    // var o = {a: 1, b: 3}
-    // console.log(add.call(o,5,7))
+    // var pigJZH = {a: 1, b: 3}
+    // console.log(add.call(pigJZH,5,7))
     // //参数形式不同，call接收 ...argArray: any[]，apply接收 argArray?: any
-    // console.log(add.apply(o,[5,7]))
+    // console.log(add.apply(pigJZH,[5,7]))
 
     //bind方法：ECMAScript 5 引入了 Function.prototype.bind()。调用f.bind(someObject)会创建一个与f具有相同函数体
     //和作用域的函数，但是在这个新函数中，this将永久地被绑定到了bind的第一个参数，无论这个函数是如何被调用的。
@@ -155,7 +155,7 @@
     //还是这种情况，引用一个对象的方法创建一个新的变量，将该变量作为函数调用，这个方法里的this为全局对象
     // let nig = obj2.func
     // console.log(nig())
-    //这样的行为完全不会受函数定义方式或位置的影响。就算先定义函数func2，然后再将其附属到obj2.func2。这样做的结果是一样的：这表明函数是从 o 的 func4 成员调用的才是重点。
+    //这样的行为完全不会受函数定义方式或位置的影响。就算先定义函数func2，然后再将其附属到obj2.func2。这样做的结果是一样的：这表明函数是从 pigJZH 的 func4 成员调用的才是重点。
     // function func2() {
     //     return this
     // }
@@ -205,8 +205,8 @@
     //     this.a = 30
     // }
     //
-    // let o = new C()
-    // console.log(o.a)
+    // let pigJZH = new C()
+    // console.log(pigJZH.a)
     //
     // function HaveReturn() {
     //     this.a = 30 //会执行，但是失去意义
@@ -282,7 +282,7 @@
     //
     // //作为构造函数调用
     // console.log('作为构造函数调用')
-    // let o = new func()
+    // let pigJZH = new func()
     //
     // //原型链中调用
     // let p = {

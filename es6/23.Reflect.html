@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script>
+    // 《一. 基础》
+    // Reflect 是一个内置的对象，它提供拦截 JavaScript 操作的方法。
+    // 【这些方法与proxy handlers 的方法相同。】
+    // Reflect不是一个函数对象，因此它是不可构造的。
+    let girl = {
+        dress: '骚吊带'
+    }
+    console.log(Reflect.get(girl,'dress'))
+
+    let girlProxy = new Proxy(girl,{
+        get(target, p, receiver) {
+            return p in target ? target[p] : '骚lo'
+        }
+    })
+
+    console.log(Reflect.get(girlProxy,'name'))
+</script>
+</html>

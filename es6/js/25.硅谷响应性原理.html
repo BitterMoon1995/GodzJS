@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>硅谷响应性原理</title>
+</head>
+<body>
+
+</body>
+<script>
+    //难点：
+    // 1.不能直接写个简单的递归函数，因为要给对象挂__ob__属性，这个属性上还要挂东西（watcher 、dept）
+    // 2.并非单函数内部递归，而是多代码段之间共同完成递归。
+    // 3.核心目的就是给目标对象挂载__ob__属性，而且我们默认它是个复杂对象（属性值有数组、有对象），
+    // 最终挂了多少个observer实例取决于对象的复杂程度（内部嵌套了多少个数组、对象）
+
+    function defineReactive(obj, key, val) {
+        if (arguments.length === 2){
+            val = obj[key]
+        }
+
+        // 如果是obj = girl，key = name，会直接返回，然后执行后续的逻辑完成对name的劫持
+        // 如果是obj = girl，key = cloth，会observe({type: 'dress'})，
+        // 先给{type: 'dress'}这个对象挂上__ob__属性，
+        // 然后walk到type属性，并劫持cloth.type属性。
+        // 最后从observe({type: 'dress'})出来，执行劫持girl.cloth
+        let childOb = observe(val)
+
+        Object.defineProperty(obj, key, {
+            enumerable: true,
+            configurable: true,
+            get() {
+                console.log(`get ${key} 被调用`)
+                return val
+            },
+            set(newVal) {
+                if (newVal === val) {
+                    return
+                }
+                console.log(`set ${key} 被调用`)
+                val = newVal
+                childOb  = observe(newVal)
+            }
+        })
+    }
+
+    function defProp(obj, key, value, enumerable) {
+        Object.defineProperty(obj, key, {
+            value,
+            enumerable,
+            writable: true,
+            configurable: true
+        })
+    }
+
+    class Observer {
+        constructor(value) {
+            // 必须是false！__ob__不能被walk()方法枚举，不然要炸栈！
+            // 因为如果执行defineReactive(girl, '__ob__')，
+            // 会在24行会执行let childOb = observe(val)，其中val = girl.__ob__ = 一个Observer实例（记作observer）。
+            // 因为它不是一个基本类型，所以不会在74行return而是又进81行ob = new Observer(observer)，
+            // 然后又执行defProp(observer, '__ob__', this, true)然后又walk到girl.__ob__.__ob__
+            // 最后就产生girl.__ob__.__ob__.__ob__.......(无穷大) = new Observer()，导致栈溢出
+            defProp(value, '__ob__', this, false)
+            console.log('我是Observer构造器', value, this)
+            this.walk(value)
+        }
+        walk(value) {
+            for (let key in value){
+                defineReactive(value, key)
+            }
+        }
+    }
+
+    function observe(value) {
+        if (typeof value !== 'object') {
+            return
+        }
+        let ob
+
+        if (value.__ob__ !== undefined) {
+            ob = value.__ob__
+        } else {
+            ob = new Observer(value)
+        }
+        return ob
+    }
+
+    let girl = {
+        name: '周薇儿',
+        age: 18,
+        cloth: {
+            type: 'dress'
+        }
+    }
+
+    class Dep {
+        constructor() {
+            console.log('Dep构造')
+        }
+    }
+
+    class Watcher {
+        constructor() {
+            console.log('Watcher构造')
+        }
+    }
+
+    observe(girl)
+    girl.age = 16
+    // girl.cloth = {
+    //     color: 'pink'
+    // }
+    console.log(girl)
+</script>
+</html>
