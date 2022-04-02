@@ -74,27 +74,27 @@
     //     meal: 'barbecue'
     // }
     //
-    // // 它将检查当前运行的是哪个副作用，并将其与 target 和 property 记录在一起。
+    // // 它将检查当前运行的是哪个副作用，并将其与 globalTarget 和 property 记录在一起。
     // // 这就是 Vue 如何知道这个 property 是该副作用的依赖项。
-    // function track(target, property) {
+    // function track(globalTarget, property) {
     //
     // }
     //
     // // trigger 函数查找哪些副作用依赖于该 property 并执行它们。
-    // function trigger(target, property) {
+    // function trigger(globalTarget, property) {
     //
     // }
     //
     // const dinnerProxy = new Proxy(dinner, {
-    //     get(target, p, receiver) {
+    //     get(globalTarget, p, receiver) {
     //         // console.log('intercepted!')
-    //         // return target[p]
+    //         // return globalTarget[p]
     //         // console.log(arguments)
-    //         track(target, p)
+    //         track(globalTarget, p)
     //         return Reflect.get(...arguments)
     //     },
-    //     set(target, p, value, receiver) {
-    //         trigger(target, p)
+    //     set(globalTarget, p, value, receiver) {
+    //         trigger(globalTarget, p)
     //         return Reflect.set(...arguments)
     //     }
     // })

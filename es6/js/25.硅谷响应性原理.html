@@ -15,9 +15,11 @@
     // 最终挂了多少个observer实例取决于对象的复杂程度（内部嵌套了多少个数组、对象）
 
     function defineReactive(obj, key, val) {
-        if (arguments.length === 2){
+        if (arguments.length === 2) {
             val = obj[key]
         }
+
+        const dep = new Dep()
 
         // 如果是obj = girl，key = name，会直接返回，然后执行后续的逻辑完成对name的劫持
         // 如果是obj = girl，key = cloth，会observe({type: 'dress'})，
@@ -31,6 +33,12 @@
             configurable: true,
             get() {
                 console.log(`get ${key} 被调用`)
+                if (globalTarget) {
+                    dep.depend()
+                    if (childOb) {
+                        childOb.dep.depend()
+                    }
+                }
                 return val
             },
             set(newVal) {
@@ -39,7 +47,9 @@
                 }
                 console.log(`set ${key} 被调用`)
                 val = newVal
-                childOb  = observe(newVal)
+                childOb = observe(newVal)
+                // 发布订阅模式，值产生变化时，通知dep
+                dep.notify()
             }
         })
     }
@@ -62,11 +72,14 @@
             // 然后又执行defProp(observer, '__ob__', this, true)然后又walk到girl.__ob__.__ob__
             // 最后就产生girl.__ob__.__ob__.__ob__.......(无穷大) = new Observer()，导致栈溢出
             defProp(value, '__ob__', this, false)
+            // 挂载dep实例
+            this.dep = new Dep()
             console.log('我是Observer构造器', value, this)
             this.walk(value)
         }
+
         walk(value) {
-            for (let key in value){
+            for (let key in value) {
                 defineReactive(value, key)
             }
         }
@@ -88,29 +101,135 @@
 
     let girl = {
         name: '周薇儿',
-        age: 18,
+        // age: 18,
         cloth: {
             type: 'dress'
         }
     }
 
+    // 把依赖收集的代码封装成一个Dep类，它专门用来管理依赖，每一个Observer实例，
+    // 都包含一个Dep类的成员。
+    let depId = 0
+    let globalTarget
+
     class Dep {
         constructor() {
             console.log('Dep构造')
+            //发布-订阅模式之用数组存储watcher的实例
+            this.subs = []
+            this.id = depId++
+        }
+
+        addSub(sub) {
+            this.subs.push(sub)
+        }
+
+        // 添加依赖
+        depend() {
+            // Dep.target是我们自己指定的全局位置，可以是任何量，只要保证唯一即可
+            if (globalTarget) {
+                this.addSub(globalTarget)
+            }
+        }
+
+        notify() {
+            console.log('dep.notify调用')
+            let cloneSubs = this.subs.slice();
+            for (let cloneSub of cloneSubs) {
+                cloneSub.update()
+            }
         }
     }
+
+    // 是中介，数据产生变化时通知组件
+    let watcherId = 0
 
     class Watcher {
-        constructor() {
+        constructor(target, exp, callback) {
             console.log('Watcher构造')
+            this.id = watcherId
+            this.target = target
+            this.getter = this.parsePath(exp)
+            this.callback = callback
+            this.exp = exp
+            this.value = this.get()
+        }
+
+        update() {
+            this.run()
+        }
+
+        get() {
+            // 进入依赖收集阶段，让全局target对象设置为watcher本身
+            globalTarget = this
+            const obj = this.target
+            let value
+            try {
+                value = this.getter(obj)
+            } finally {
+                globalTarget = null
+            }
+            return value
+        }
+
+        parsePath(exp) {
+            let segments = exp.split('.')
+
+            return (obj) => {
+                for (let i = 0; i < segments.length; i++) {
+                    if (!obj) {
+                        return
+                    }
+                    obj = obj[segments[i]]
+                }
+                return obj
+            }
+        }
+
+        run() {
+            this.getAndInvoke(this.callback)
+        }
+
+        getAndInvoke(callback) {
+            const oldValue = this.value
+            const value = this.get()
+            if (value !== this.value || typeof value === 'object') {
+                this.value = value
+                callback.call(this.target, value, oldValue)
+            }
         }
     }
 
-    observe(girl)
-    girl.age = 16
+    // observe(girl)
+    // girl.age = 16
     // girl.cloth = {
     //     color: 'pink'
     // }
+    // console.log(girl)
+
+    // let watcher = new Watcher()
+    // let fn = watcher.parsePath('a.b.c')
+    // let r = fn({
+    //     a: {
+    //         b: {
+    //             c: 7
+    //         }
+    //     }
+    // })
+    // console.log(r)
+
+    observe(girl)
+    let watcher2 = new Watcher(girl, 'name', (target, value, oldValue) => {
+        console.log('已监听到name改动，开始执行后续页面更新......')
+        console.log(target, value, oldValue)
+    })
+    let watcher = new Watcher(girl, 'cloth.type', (target, value, oldValue) => {
+        console.log('已监听到cloth.type改动，开始执行后续页面更新......')
+        console.log(target, value, oldValue)
+    })
+    girl.name = '周雨薇'
+    girl.cloth.type = 'jk'
     console.log(girl)
+
 </script>
 </html>

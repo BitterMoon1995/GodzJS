@@ -18,7 +18,7 @@
     console.log(Reflect.get(girl,'dress'))
 
     let girlProxy = new Proxy(girl,{
-        get(target, p, receiver) {
+        get(globalTarget, p, receiver) {
             return p in target ? target[p] : '骚lo'
         }
     })

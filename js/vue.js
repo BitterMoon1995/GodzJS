@@ -237,7 +237,7 @@
   }
 
   /**
-   * Mix properties into target object.
+   * Mix properties into globalTarget object.
    */
   function extend (to, _from) {
     for (var key in _from) {
@@ -746,7 +746,7 @@
     }
   };
 
-  // The current target watcher being evaluated.
+  // The current globalTarget watcher being evaluated.
   // This is globally unique because only one watcher
   // can be evaluated at a time.
   Dep.target = null;
@@ -915,7 +915,7 @@
 
   /**
    * Observer class that is attached to each observed
-   * object. Once attached, the observer converts the target
+   * object. Once attached, the observer converts the globalTarget
    * object's property keys into getter/setters that
    * collect dependencies and dispatch updates.
    */
@@ -960,7 +960,7 @@
   // helpers
 
   /**
-   * Augment a target Object or Array by intercepting
+   * Augment a globalTarget Object or Array by intercepting
    * the prototype chain using __proto__
    */
   function protoAugment (target, src) {
@@ -970,7 +970,7 @@
   }
 
   /**
-   * Augment a target Object or Array by defining
+   * Augment a globalTarget Object or Array by defining
    * hidden properties.
    */
   /* istanbul ignore next */
@@ -7005,7 +7005,7 @@
 
     // normalize click.right and click.middle since they don't actually fire
     // this is technically browser-specific, but at least for now browsers are
-    // the only target envs that have right/middle clicks.
+    // the only globalTarget envs that have right/middle clicks.
     if (modifiers.right) {
       if (dynamic) {
         name = "(" + name + ")==='click'?'contextmenu':(" + name + ")";
@@ -7372,7 +7372,7 @@
     );
     addHandler(el, 'change',
       "var $$a=" + value + "," +
-          '$$el=$event.target,' +
+          '$$el=$event.globalTarget,' +
           "$$c=$$el.checked?(" + trueValueBinding + "):(" + falseValueBinding + ");" +
       'if(Array.isArray($$a)){' +
         "var $$v=" + (number ? '_n(' + valueBinding + ')' : valueBinding) + "," +
@@ -7403,11 +7403,11 @@
   ) {
     var number = modifiers && modifiers.number;
     var selectedVal = "Array.prototype.filter" +
-      ".call($event.target.options,function(pigJZH){return pigJZH.selected})" +
+      ".call($event.globalTarget.options,function(pigJZH){return pigJZH.selected})" +
       ".map(function(pigJZH){var val = \"_value\" in pigJZH ? pigJZH._value : pigJZH.value;" +
       "return " + (number ? '_n(val)' : 'val') + "})";
 
-    var assignment = '$event.target.multiple ? $$selectedVal : $$selectedVal[0]';
+    var assignment = '$event.globalTarget.multiple ? $$selectedVal : $$selectedVal[0]';
     var code = "var $$selectedVal = " + selectedVal + ";";
     code = code + " " + (genAssignmentCode(value, assignment));
     addHandler(el, 'change', code, null, true);
@@ -7446,9 +7446,9 @@
         ? RANGE_TOKEN
         : 'input';
 
-    var valueExpression = '$event.target.value';
+    var valueExpression = '$event.globalTarget.value';
     if (trim) {
-      valueExpression = "$event.target.value.trim()";
+      valueExpression = "$event.globalTarget.value.trim()";
     }
     if (number) {
       valueExpression = "_n(" + valueExpression + ")";
@@ -7456,7 +7456,7 @@
 
     var code = genAssignmentCode(value, valueExpression);
     if (needCompositionGuard) {
-      code = "if($event.target.composing)return;" + code;
+      code = "if($event.globalTarget.composing)return;" + code;
     }
 
     addProp(el, 'value', ("(" + value + ")"));
@@ -7492,7 +7492,7 @@
   var target$1;
 
   function createOnceHandler$1 (event, handler, capture) {
-    var _target = target$1; // save current target element in closure
+    var _target = target$1; // save current globalTarget element in closure
     return function onceHandler () {
       var res = handler.apply(null, arguments);
       if (res !== null) {
@@ -10762,7 +10762,7 @@
   var modifierCode = {
     stop: '$event.stopPropagation();',
     prevent: '$event.preventDefault();',
-    self: genGuard("$event.target !== $event.currentTarget"),
+    self: genGuard("$event.globalTarget !== $event.currentTarget"),
     ctrl: genGuard("!$event.ctrlKey"),
     shift: genGuard("!$event.shiftKey"),
     alt: genGuard("!$event.altKey"),
@@ -11136,7 +11136,7 @@
     if (el.nativeEvents) {
       data += (genHandlers(el.nativeEvents, true)) + ",";
     }
-    // slot target
+    // slot globalTarget
     // only for non-scoped slots
     if (el.slotTarget && !el.slotScope) {
       data += "slot:" + (el.slotTarget) + ",";

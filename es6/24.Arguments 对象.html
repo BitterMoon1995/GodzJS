@@ -63,12 +63,12 @@
         length: '短裙'
     }
     const skirtPx = new Proxy(skirt, {
-        get(target, p, receiver) {
+        get(globalTarget, p, receiver) {
             // 释经：namespace Reflect 与 interface ProxyHandler中的方法一一对应，
             // 实现完全相同。方法列表当然也完全相同，所以内外调用时内层可以直接...arguments，非常炫。
             Reflect.get(...arguments)
         },
-        set(target, p, value, receiver) {
+        set(globalTarget, p, value, receiver) {
             Reflect.set(...arguments)
         }
     })

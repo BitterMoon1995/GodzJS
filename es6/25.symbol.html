@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>symbol</title>
+</head>
+<body>
+
+</body>
+<script>
+    /*
+    《一 基础》
+    语法：Symbol([description])
+    参数：description 可选。可选的，字符串类型。对symbol的描述，可用于调试但不是访问symbol本身。
+
+    symbol为基本数据类型，typeof Symbol() = symbol
+    只能调用Symbol()初始化，不能new Symbol()；
+    每次调用Symbol()都会创建一个新的symbol类型的变量，Symbol('s') ！= Symbol('s')。
+     */
+    // const sb1 = Symbol()
+    // // const sb = new Symbol()
+    // const sb2 = Symbol('s')
+    // const sb3 = Symbol('s')
+    //
+    // console.log(sb1, sb3)
+    // console.log(typeof sb1)
+    // console.log(sb2 === sb3)
+
+    //《二 用途》
+    // 可以用作属性的键名，
+    // const sb4 = Symbol('name')
+    // const sb5 = Symbol('age')
+    // let o = {
+    //     // 直接作属性键名，等同于其description string作属性键名
+    //     sb4: '周薇儿', // 等同于 'sb4': '周薇儿'
+    //     // 用方括号属性访问器包裹，这个symbol变量本身作属性键名
+    //     [sb5]: 18, // 等同于 Symbol(age): 18
+    //     [Symbol('salary')]: 1750
+    // }
+    // console.log(o)
+    // console.log(o.sb4, o[sb5])
+    // // 当一个 Symbol 包装器对象作为一个属性的键时，这个对象将被强制转换为它包装过的 symbol 值
+    // console.log(o[Object(sb5)])
+    //
+    // // Symbol作键名时，无法被枚举
+    // console.log(Object.keys(o))
+    // for (let oKey in o) {
+    //     console.log(oKey)
+    // }
+    //
+    // // 在对象中查找 Symbol 属性：只能使用Object.getOwnPropertySymbols() 方法，
+    // // 以在查找一个给定对象的符号属性时返回一个symbol类型的数组。
+    // console.log(Object.getOwnPropertySymbols(o))
+
+    //《三. 方法》
+    // 静态方法：
+    // for(key: string): symbol
+    // 使用给定的key搜索现有的symbol，如果找到则返回该symbol。
+    // 【否则将使用给定的key在全局symbol注册表中创建一个新的symbol】。
+    // let sb7 = Symbol.for('key1');
+    // let sb8 = Symbol.for('key1');
+    // console.log(sb7 === sb8) //true
+
+    // keyFor(sym: symbol): string | undefined;
+    // 从全局symbol注册表中，为给定的symbol检索一个共享的?symbol key。
+    let sb9 = Symbol.for('key2')
+    console.log(Symbol.keyFor(sb9))
+
+
+    //《四. 类型转换》
+    // 无法转换
+
+    // 转不了string，只会创建一个新的symbol
+    // let sb6 = Symbol('sb')
+    // let s = sb6.toString();
+    // console.log(s)
+    // let i =0
+    // while (s.charAt(i) !== '' ) {
+    //     console.log(s.charAt(i))
+    //     i++
+    // }
+
+    // number亦然
+    // let num = Symbol('1')
+    // console.log(num)
+    // console.log(num++)
+
+    //《五. unique symbol》
+
+    // 为typescript2.7版本的新特性：https://www.tslang.cn/docs/release-notes/typescript-2.7.html
+
+</script>
+</html>
